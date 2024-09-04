@@ -14,6 +14,7 @@
 		32F86FD82C870C6000B30A88 /* ZeusAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F86FD72C870C6000B30A88 /* ZeusAppTests.swift */; };
 		32F86FE22C870C6000B30A88 /* ZeusAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F86FE12C870C6000B30A88 /* ZeusAppUITests.swift */; };
 		32F86FE42C870C6000B30A88 /* ZeusAppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F86FE32C870C6000B30A88 /* ZeusAppUITestsLaunchTests.swift */; };
+		32F86FF12C870E9500B30A88 /* CoursesStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F86FF02C870E9500B30A88 /* CoursesStructs.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +46,7 @@
 		32F86FDD2C870C6000B30A88 /* ZeusAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ZeusAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		32F86FE12C870C6000B30A88 /* ZeusAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeusAppUITests.swift; sourceTree = "<group>"; };
 		32F86FE32C870C6000B30A88 /* ZeusAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeusAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		32F86FF02C870E9500B30A88 /* CoursesStructs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoursesStructs.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +102,7 @@
 				32F86FC92C870C6000B30A88 /* Assets.xcassets */,
 				32F86FCB2C870C6000B30A88 /* ZeusApp.entitlements */,
 				32F86FCC2C870C6000B30A88 /* Preview Content */,
+				32F86FF02C870E9500B30A88 /* CoursesStructs.swift */,
 			);
 			path = ZeusApp;
 			sourceTree = "<group>";
@@ -259,6 +262,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				32F86FF12C870E9500B30A88 /* CoursesStructs.swift in Sources */,
 				32F86FC82C870C5F00B30A88 /* ContentView.swift in Sources */,
 				32F86FC62C870C5F00B30A88 /* ZeusAppApp.swift in Sources */,
 			);
