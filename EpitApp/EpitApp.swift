@@ -7,11 +7,12 @@
 
 import SwiftUI
 
+
 @main
-struct ZeusAppApp: App {
+struct EpitApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView().tint(.orange)
         }
     }
 }
