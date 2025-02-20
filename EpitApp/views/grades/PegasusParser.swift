@@ -84,11 +84,10 @@ class PegasusParser: ObservableObject {
         self.pegasusAuthModel = pegasusAuthModel
         self.progressState = .fetching
         self.data = nil
-        DispatchQueue.background(completion:  {
-            Task {
-                await self.parseAll()
-            }
-        })
+        Task {
+            await self.parseAll()
+        }
+    
 
     }
 
@@ -102,7 +101,7 @@ class PegasusParser: ObservableObject {
         self.progressState = .parsing
         print("Done fetching.")
         
-        DispatchQueue.background(background:  {
+        DispatchQueue.global(qos: .userInitiated).async {
             guard let parsed = self.parseDate(rawContent: rawContent) else {
                 DispatchQueue.main.async {
                     self.progressState = .errorParsing
@@ -115,7 +114,7 @@ class PegasusParser: ObservableObject {
                 self.progressState = .done
             }
             print("Done parsing.")
-        })
+        }
     }
     
     private func fetchData() async -> String? {
@@ -147,8 +146,9 @@ class PegasusParser: ObservableObject {
     
     private func parseDate(rawContent: String) -> PegasusYear? {
         do {
+            print("a")
             let doc = try SwiftSoup.parse(rawContent)
-
+            print("b")
             return try parseYear(doc: doc)
         } catch Exception.Error(let type, let message) {
             self.progressState = .errorParsing
