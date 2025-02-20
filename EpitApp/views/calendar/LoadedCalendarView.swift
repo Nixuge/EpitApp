@@ -65,7 +65,7 @@ struct LoadedCalendarView: View {
                 }
             }
             .onAppear() {
-                updateDisplayedDates(for: selectedDate)
+                updateDisplayedDates(for: selectedDate, delayMS: 0)
             }
             //            Text("Valid token found and checked (len of \(zeusAuthModel.token!.count)). Token start: '\(zeusAuthModel.token!.prefix(30))'.")
         }.refreshable {
@@ -116,11 +116,14 @@ struct LoadedCalendarView: View {
         
     }
     
-    private func updateDisplayedDates(for date: Date) {
-        let calendar = Calendar.current
-        guard let startDate = calendar.date(byAdding: .day, value: -preloadedTabAmount / 2, to: date) else {
-            return
+    // Note: The delay helps avoid the weird rolback thing when going too fast. Still not perfect tho.
+    private func updateDisplayedDates(for date: Date, delayMS: Float = 100) {
+        DispatchQueue.main.asyncAfter(deadline: .now().advanced(by: .milliseconds(Int(delayMS)))) {
+            let calendar = Calendar.current
+            guard let startDate = calendar.date(byAdding: .day, value: -preloadedTabAmount / 2, to: date) else {
+                return
+            }
+            displayedDates = (0..<preloadedTabAmount).compactMap { calendar.date(byAdding: .day, value: $0, to: startDate) }
         }
-        displayedDates = (0..<preloadedTabAmount).compactMap { calendar.date(byAdding: .day, value: $0, to: startDate) }
     }
 }
