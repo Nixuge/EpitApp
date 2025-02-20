@@ -29,9 +29,9 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		32F7627F2D62010800B7BEB8 /* utils */ = {
+		32F7627F2D62010800B7BEB8 /* extensions */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = utils;
+			path = extensions;
 			sourceTree = "<group>";
 		};
 		32F762832D6232FF00B7BEB8 /* auth */ = {
@@ -98,7 +98,7 @@
 			children = (
 				32F762892D62337900B7BEB8 /* views */,
 				32F762832D6232FF00B7BEB8 /* auth */,
-				32F7627F2D62010800B7BEB8 /* utils */,
+				32F7627F2D62010800B7BEB8 /* extensions */,
 				32880C102D5FCACA0089B183 /* ContentView.swift */,
 				32F86FC52C870C5F00B30A88 /* EpitApp.swift */,
 				32F86FC92C870C6000B30A88 /* Assets.xcassets */,
@@ -135,7 +135,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				32F7627F2D62010800B7BEB8 /* utils */,
+				32F7627F2D62010800B7BEB8 /* extensions */,
 				32F762832D6232FF00B7BEB8 /* auth */,
 				32F762892D62337900B7BEB8 /* views */,
 			);

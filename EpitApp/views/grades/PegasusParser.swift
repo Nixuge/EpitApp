@@ -114,7 +114,7 @@ class PegasusParser: ObservableObject {
                 self.data = parsed
                 self.progressState = .done
             }
-            print(parsed)
+            print("Done parsing.")
         })
     }
     
@@ -147,7 +147,6 @@ class PegasusParser: ObservableObject {
     
     private func parseDate(rawContent: String) -> PegasusYear? {
         do {
-            
             let doc = try SwiftSoup.parse(rawContent)
 
             return try parseYear(doc: doc)
@@ -161,203 +160,185 @@ class PegasusParser: ObservableObject {
     }
     
     private func parseYear(doc: Document) throws -> PegasusYear {
-        var currentPath = "div#bloc_0_TITRE > table > tbody > tr.dsp_data_tr"
-        
-        let firstDepth = try doc.select(currentPath)
-        
-        // Parse top row(s)
-        var columns: [String] = []
-        for columnRaw in try firstDepth[0].select("td.dsp_data_td_data") {
-            columns.append(try columnRaw.text())
-        }
-        let year = try firstDepth[2].select("td.dsp_data_td_data").text().trimmingCharacters(in: .whitespacesAndNewlines)
+            let firstDepth = try doc.select("div#bloc_0_TITRE > table > tbody > tr.dsp_data_tr")
 
-        return PegasusYear(
-            columns: columns,
-            year: year,
-            semesters: try parseSemesters(doc: doc, path: currentPath + ":nth-of-type(4) > td > div > table > tbody > tr")
-        )
-    }
-    
-    private func parseSemesters(doc: Document, path: String) throws -> [PegasusSemester] {
-        //TODO: HANDLE 0 ON BOTH THIS & PARSELOCATIONS
-        //TODO: HAndle weird note between semester & localisation
-        var semesters: [PegasusSemester] = []
-        let secondDepth = try doc.select(path)
-        for i in 0...((secondDepth.count/2)-1){ // Semester are only at the odd places, their data at even places.
-            let semesterRow = i*2
-            let semesterMeta = try secondDepth[semesterRow].select("td")
-
-            let currentSemester = PegasusSemester(
-                _weirdYear: try semesterMeta[2].text(),
-                label: try semesterMeta[3].text(),
-                // html index = 1, and +1 compaired to i
-                localisations: try parseLocalisations(doc: doc, path: path + ":nth-of-type(\(semesterRow+2)) > td > div > table > tbody > tr")
-            )
-            
-            semesters.append(currentSemester)
-        }
-        return semesters
-    }
-    private func parseLocalisations(doc: Document, path: String) throws -> [PegasusLocalisation] {
-        var localisations: [PegasusLocalisation] = []
-        let thirdDepth = try doc.select(path)
-        for i in 0...((thirdDepth.count/2)-1){
-            let row = i*2
-            let meta = try thirdDepth[row].select("td")
-            
-            let weirdY = try meta[3].text()
-            let label = try meta[4].text()
-            // For some reason, theres an annoying grade thats just in there for some reason.
-            if (weirdY.trimmingCharacters(in: .whitespacesAndNewlines) == "" || label.trimmingCharacters(in: .whitespacesAndNewlines) == "" ) {
-                print("Item seem empty, skipping row.")
-                continue
+            var columns: [String] = []
+            for columnRaw in try firstDepth[0].select("td.dsp_data_td_data") {
+                columns.append(try columnRaw.text())
             }
-                        
-            let currentLocalisation = PegasusLocalisation(
-                _weirdYear: weirdY,
-                label: label,
-                compensations: try parseCompensations(doc: doc, path: path + ":nth-of-type(\(row+2)) > td > div > table > tbody > tr")
+            let year = try firstDepth[2].select("td.dsp_data_td_data").text().trimmingCharacters(in: .whitespacesAndNewlines)
+
+            return PegasusYear(
+                columns: columns,
+                year: year,
+                semesters: try parseSemesters(rootElement: firstDepth[3])
             )
-            
-            localisations.append(currentLocalisation)
         }
-        return localisations
-    }
-    
-    private func parseCompensations(doc: Document, path: String) throws -> [PegasusCompensation] {
-        var compensations: [PegasusCompensation] = []
-        let fourthDepth = try doc.select(path)
 
-        for i in 0...((fourthDepth.count/2)-1){
-            let row = i*2
-            let meta = try fourthDepth[row].select("td")
+        private func parseSemesters(rootElement: Element) throws -> [PegasusSemester] {
+            var semesters: [PegasusSemester] = []
+            let secondDepth = try rootElement.select("> td > div > table > tbody > tr")
+            for i in 0..<secondDepth.count where i % 2 == 0 {
+                let semesterRow = secondDepth[i]
+                let semesterMeta = try semesterRow.select("td")
 
-            let currentLocalisation = PegasusCompensation(
-                _weirdYear: try meta[4].text(),
-                label: try meta[5].text(),
-                UEs: try parseUEs(doc: doc, path: path + ":nth-of-type(\(row+2)) > td > div > table > tbody > tr")
-            )
-            
-            compensations.append(currentLocalisation)
+                let currentSemester = PegasusSemester(
+                    _weirdYear: try semesterMeta[2].text(),
+                    label: try semesterMeta[3].text(),
+                    localisations: try parseLocalisations(rootElement: secondDepth[i + 1])
+                )
+
+                semesters.append(currentSemester)
+            }
+            return semesters
         }
-        return compensations
-    }
-    
-    private func parseUEs(doc: Document, path: String) throws -> [PegasusUE] {
-        var UEs: [PegasusUE] = []
-        let fifthDepth = try doc.select(path)
 
-        for i in 0...((fifthDepth.count/2)-1){
-            let row = i*2
-            let meta = try fifthDepth[row].select("td")
-            
-            let state: UEState?
-            switch try meta[10].text() {
+        private func parseLocalisations(rootElement: Element) throws -> [PegasusLocalisation] {
+            var localisations: [PegasusLocalisation] = []
+            let thirdDepth = try rootElement.select("> td > div > table > tbody > tr")
+            for i in 0..<thirdDepth.count where i % 2 == 0 {
+                let row = thirdDepth[i]
+                let meta = try row.select("td")
+
+                let weirdY = try meta[3].text()
+                let label = try meta[4].text()
+                if (weirdY.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || label.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty) {
+                    print("Item seems empty, skipping row.")
+                    continue
+                }
+
+                let currentLocalisation = PegasusLocalisation(
+                    _weirdYear: weirdY,
+                    label: label,
+                    compensations: try parseCompensations(rootElement: thirdDepth[i + 1])
+                )
+
+                localisations.append(currentLocalisation)
+            }
+            return localisations
+        }
+
+        private func parseCompensations(rootElement: Element) throws -> [PegasusCompensation] {
+            var compensations: [PegasusCompensation] = []
+            let fourthDepth = try rootElement.select("> td > div > table > tbody > tr")
+
+            for i in 0..<fourthDepth.count where i % 2 == 0 {
+                let row = fourthDepth[i]
+                let meta = try row.select("td")
+
+                let currentCompensation = PegasusCompensation(
+                    _weirdYear: try meta[4].text(),
+                    label: try meta[5].text(),
+                    UEs: try parseUEs(rootElement: fourthDepth[i + 1])
+                )
+
+                compensations.append(currentCompensation)
+            }
+            return compensations
+        }
+
+        private func parseUEs(rootElement: Element) throws -> [PegasusUE] {
+            var UEs: [PegasusUE] = []
+            let fifthDepth = try rootElement.select("> td > div > table > tbody > tr")
+
+            for i in 0..<fifthDepth.count where i % 2 == 0 {
+                let row = fifthDepth[i]
+                let meta = try row.select("td")
+
+                let state: UEState?
+                switch try meta[10].text() {
                 case "VA":
                     state = .validated
                 case "NV":
                     state = .unvalidated
                 default:
                     state = nil
-            }
-            
-            let currentUE = PegasusUE(
-                _weirdYear: try meta[5].text(),
-                label: try meta[6].text(),
-                averageNote: Float(try meta[8].text()),
-                state: state,
-                ECUEs: try parseECUEs(doc: doc, path: path + ":nth-of-type(\(row+2)) > td > div > table > tbody > tr")
-            )
-            
-            UEs.append(currentUE)
-        }
-        return UEs
-    }
-    
-    private func parseECUEs(doc: Document, path: String) throws -> [PegasusECUE] {
-        var ECUEs: [PegasusECUE] = []
-        let fifthDepth = try doc.select(path)
+                }
 
-        for i in 0...((fifthDepth.count/2)-1){
-            let row = i*2
-            let meta = try fifthDepth[row].select("td")
-            
-            let currentECUE = PegasusECUE(
-                _weirdYear: try meta[6].text(),
-                label: try meta[7].text(),
-                averageNote: Float(try meta[9].text()),
-                retakeNote: Float(try meta[10].text()),
-                inner: try parseInnerECUE(doc: doc, path: path + ":nth-of-type(\(row+2)) > td > div > table > tbody > tr")
-            )
-            
-            ECUEs.append(currentECUE)
-        }
-        return ECUEs
-    }
-    
-    private func parseInnerECUE(doc: Document, path: String) throws -> [PegasusECUEInner] {
-        var innerECUEs: [PegasusECUEInner] = []
-        let sixthDepth = try doc.select(path)
-        
-        
-        for i in 0...((sixthDepth.count/2)-1){
-            let row = i*2
-            let sixthDepth = try doc.select(path)
-                        
-            let meta = try sixthDepth[row].select("td")
+                let currentUE = PegasusUE(
+                    _weirdYear: try meta[5].text(),
+                    label: try meta[6].text(),
+                    averageNote: Float(try meta[8].text()),
+                    state: state,
+                    ECUEs: try parseECUEs(rootElement: fifthDepth[i + 1])
+                )
 
-            let currentInnerECUE = PegasusECUEInner(
-                _weirdYear: try meta[7].text(),
-                label: try meta[8].text(),
-                averageNote: Float(try meta[10].text()),
-                grades: try parseGrades(doc: doc, path: path + ":nth-of-type(\(row+2)) > td > div > table > tbody > tr")
-            )
-            
-            innerECUEs.append(currentInnerECUE)
-        }
-        return innerECUEs
-    }
-    
-    private func parseGrades(doc: Document, path: String) throws -> [PegasusGrade] {
-        var grades: [PegasusGrade] = []
-        let seventhDepth = try doc.select(path)
-        if (seventhDepth.count == 0) {
-            return []
-        }
-        
-        for i in 0...((seventhDepth.count/2)-1){
-            let row = i*2
-            let sixthDepth = try doc.select(path)
-                        
-            let meta = try seventhDepth[row].select("td")
-            
-            // Values possible:
-            // "Pas de notes"
-            // "ABSJ"
-            // "ABSNJ"
-            
-            let rawGrade = try meta[18].text()
-            var grade: PegasusGradeValue
-            if (rawGrade == "ABSJ") {
-                grade = PegasusGradeValue(type: .absj)
-            } else if (rawGrade == "ABSNJ") {
-                grade = PegasusGradeValue(type: .absnj)
-            } else if (Float(rawGrade)) != nil {
-                grade = PegasusGradeValue(type: .float, value: Float(rawGrade)!)
-            } else {
-                grade = PegasusGradeValue.init(type: .unset)
+                UEs.append(currentUE)
             }
-            
-            
-            
-            let currentGrade = PegasusGrade(
-                noteType: try meta[16].text(),
-                date:  try meta[17].text(),
-                note: grade
-            )
-            grades.append(currentGrade)
+            return UEs
         }
-        return grades
-    }
+
+        private func parseECUEs(rootElement: Element) throws -> [PegasusECUE] {
+            var ECUEs: [PegasusECUE] = []
+            let sixthDepth = try rootElement.select("> td > div > table > tbody > tr")
+
+            for i in 0..<sixthDepth.count where i % 2 == 0 {
+                let row = sixthDepth[i]
+                let meta = try row.select("td")
+
+                let currentECUE = PegasusECUE(
+                    _weirdYear: try meta[6].text(),
+                    label: try meta[7].text(),
+                    averageNote: Float(try meta[9].text()),
+                    retakeNote: Float(try meta[10].text()),
+                    inner: try parseInnerECUE(rootElement: sixthDepth[i + 1])
+                )
+
+                ECUEs.append(currentECUE)
+            }
+            return ECUEs
+        }
+
+        private func parseInnerECUE(rootElement: Element) throws -> [PegasusECUEInner] {
+            var innerECUEs: [PegasusECUEInner] = []
+            let seventhDepth = try rootElement.select("> td > div > table > tbody > tr")
+
+            for i in 0..<seventhDepth.count where i % 2 == 0 {
+                let row = seventhDepth[i]
+                let meta = try row.select("td")
+
+                let currentInnerECUE = PegasusECUEInner(
+                    _weirdYear: try meta[7].text(),
+                    label: try meta[8].text(),
+                    averageNote: Float(try meta[10].text()),
+                    grades: try parseGrades(rootElement: seventhDepth[i + 1])
+                )
+
+                innerECUEs.append(currentInnerECUE)
+            }
+            return innerECUEs
+        }
+
+        private func parseGrades(rootElement: Element) throws -> [PegasusGrade] {
+            var grades: [PegasusGrade] = []
+            let eighthDepth = try rootElement.select("> td > div > table > tbody > tr")
+            if eighthDepth.isEmpty {
+                return []
+            }
+
+            for i in 0..<eighthDepth.count where i % 2 == 0 {
+                let row = eighthDepth[i]
+                let meta = try row.select("td")
+
+                let rawGrade = try meta[18].text()
+                var grade: PegasusGradeValue
+                if rawGrade == "ABSJ" {
+                    grade = PegasusGradeValue(type: .absj)
+                } else if rawGrade == "ABSNJ" {
+                    grade = PegasusGradeValue(type: .absnj)
+                } else if let floatValue = Float(rawGrade) {
+                    grade = PegasusGradeValue(type: .float, value: floatValue)
+                } else {
+                    grade = PegasusGradeValue(type: .unset)
+                }
+
+                let currentGrade = PegasusGrade(
+                    noteType: try meta[16].text(),
+                    date: try meta[17].text(),
+                    note: grade
+                )
+                grades.append(currentGrade)
+            }
+            return grades
+        }
 }
