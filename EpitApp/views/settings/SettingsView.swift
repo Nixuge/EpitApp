@@ -10,9 +10,10 @@ import SwiftUI
 struct SettingsView: View {
     @ObservedObject var authViewModel: AuthViewModel
     @ObservedObject var zeusAuthModel: ZeusAuthModel
-
+    @ObservedObject var pegasusAuthModel: PegasusAuthModel
+    
     var body: some View {
-        VStack {
+        VStack(spacing: 10) {
             Button(action: {
                 authViewModel.logout()
             }) {
@@ -24,8 +25,16 @@ struct SettingsView: View {
             }) {
                 Text("Logout from zeus")
             }
-            .disabled(zeusAuthModel.authState != AuthState.authentified)
+            .disabled(zeusAuthModel.authState != .authentified)
+            
+            Button(action: {
+                pegasusAuthModel.logout()
+            }) {
+                Text("Logout from Pegasus")
+            }
+            .disabled(pegasusAuthModel.authState != .authentified)
         }
    
+
     }
 }

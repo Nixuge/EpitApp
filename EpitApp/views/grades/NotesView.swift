@@ -8,8 +8,18 @@
 import SwiftUI
 
 struct NotesView: View {
-    var body: some View {
-        Text("Not implemented yet.")
-    }
+    @ObservedObject var pegasusAuthModel: PegasusAuthModel
     
+    var body: some View {
+        if pegasusAuthModel.authState == .authentified{
+            LoadedNotesView(pegasusAuthModel: pegasusAuthModel, pegasusParser: PegasusParser(pegasusAuthModel: pegasusAuthModel))
+        } else if pegasusAuthModel.authState == .loading {
+            VStack {
+                Text("Logging in...")
+                ProgressView().progressViewStyle(CircularProgressViewStyle(tint: .orange))
+            }
+        } else {
+            PegasusLoginView(pegasusAuthModel: pegasusAuthModel)
+        }
+    }
 }

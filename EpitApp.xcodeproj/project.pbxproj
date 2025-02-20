@@ -3,33 +3,47 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 70;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		32880C112D5FCACE0089B183 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32880C102D5FCACA0089B183 /* ContentView.swift */; };
 		32F86FC62C870C5F00B30A88 /* EpitApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F86FC52C870C5F00B30A88 /* EpitApp.swift */; };
-		32F86FC82C870C5F00B30A88 /* ContentViewOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F86FC72C870C5F00B30A88 /* ContentViewOld.swift */; };
 		32F86FCA2C870C6000B30A88 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 32F86FC92C870C6000B30A88 /* Assets.xcassets */; };
 		32F86FCE2C870C6000B30A88 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 32F86FCD2C870C6000B30A88 /* Preview Assets.xcassets */; };
 		32F86FF12C870E9500B30A88 /* CoursesStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F86FF02C870E9500B30A88 /* CoursesStructs.swift */; };
+		4C9C429A0294F539AF250826 /* Pods_EpitApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C406CD6797AA6FDDAB1512F /* Pods_EpitApp.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		208B4DBA3EC54172DD7B8075 /* Pods-EpitApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EpitApp.debug.xcconfig"; path = "Target Support Files/Pods-EpitApp/Pods-EpitApp.debug.xcconfig"; sourceTree = "<group>"; };
 		32880C102D5FCACA0089B183 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		32F86FC22C870C5F00B30A88 /* EpitApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EpitApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		32F86FC52C870C5F00B30A88 /* EpitApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpitApp.swift; sourceTree = "<group>"; };
-		32F86FC72C870C5F00B30A88 /* ContentViewOld.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewOld.swift; sourceTree = "<group>"; };
 		32F86FC92C870C6000B30A88 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		32F86FCB2C870C6000B30A88 /* EpitApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EpitApp.entitlements; sourceTree = "<group>"; };
 		32F86FCD2C870C6000B30A88 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		32F86FF02C870E9500B30A88 /* CoursesStructs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoursesStructs.swift; sourceTree = "<group>"; };
+		72E2FE9ADE9E0858BDC35E4D /* Pods-EpitApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EpitApp.release.xcconfig"; path = "Target Support Files/Pods-EpitApp/Pods-EpitApp.release.xcconfig"; sourceTree = "<group>"; };
+		8C406CD6797AA6FDDAB1512F /* Pods_EpitApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EpitApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		32F7627F2D62010800B7BEB8 /* utils */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = utils; sourceTree = "<group>"; };
-		32F762832D6232FF00B7BEB8 /* auth */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = auth; sourceTree = "<group>"; };
-		32F762892D62337900B7BEB8 /* views */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = views; sourceTree = "<group>"; };
+		32F7627F2D62010800B7BEB8 /* utils */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = utils;
+			sourceTree = "<group>";
+		};
+		32F762832D6232FF00B7BEB8 /* auth */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = auth;
+			sourceTree = "<group>";
+		};
+		32F762892D62337900B7BEB8 /* views */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = views;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,17 +51,37 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4C9C429A0294F539AF250826 /* Pods_EpitApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		22FB5FD710F5FE4545F62A00 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8C406CD6797AA6FDDAB1512F /* Pods_EpitApp.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		2413F66D6AAF5325CB09CF30 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				208B4DBA3EC54172DD7B8075 /* Pods-EpitApp.debug.xcconfig */,
+				72E2FE9ADE9E0858BDC35E4D /* Pods-EpitApp.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		32F86FB92C870C5F00B30A88 = {
 			isa = PBXGroup;
 			children = (
 				32F86FC42C870C5F00B30A88 /* EpitApp */,
 				32F86FC32C870C5F00B30A88 /* Products */,
+				2413F66D6AAF5325CB09CF30 /* Pods */,
+				22FB5FD710F5FE4545F62A00 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -67,7 +101,6 @@
 				32F7627F2D62010800B7BEB8 /* utils */,
 				32880C102D5FCACA0089B183 /* ContentView.swift */,
 				32F86FC52C870C5F00B30A88 /* EpitApp.swift */,
-				32F86FC72C870C5F00B30A88 /* ContentViewOld.swift */,
 				32F86FC92C870C6000B30A88 /* Assets.xcassets */,
 				32F86FCB2C870C6000B30A88 /* EpitApp.entitlements */,
 				32F86FCC2C870C6000B30A88 /* Preview Content */,
@@ -91,9 +124,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 32F86FE72C870C6000B30A88 /* Build configuration list for PBXNativeTarget "EpitApp" */;
 			buildPhases = (
+				8115A6FBE83037D36CAA5A72 /* [CP] Check Pods Manifest.lock */,
 				32F86FBE2C870C5F00B30A88 /* Sources */,
 				32F86FBF2C870C5F00B30A88 /* Frameworks */,
 				32F86FC02C870C5F00B30A88 /* Resources */,
+				D2343054F0FBA7D0BB554BB1 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -125,7 +160,6 @@
 				};
 			};
 			buildConfigurationList = 32F86FBD2C870C5F00B30A88 /* Build configuration list for PBXProject "EpitApp" */;
-			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -133,6 +167,7 @@
 				Base,
 			);
 			mainGroup = 32F86FB92C870C5F00B30A88;
+			preferredProjectObjectVersion = 77;
 			productRefGroup = 32F86FC32C870C5F00B30A88 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -154,13 +189,54 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		8115A6FBE83037D36CAA5A72 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-EpitApp-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D2343054F0FBA7D0BB554BB1 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EpitApp/Pods-EpitApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-EpitApp/Pods-EpitApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-EpitApp/Pods-EpitApp-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		32F86FBE2C870C5F00B30A88 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				32F86FF12C870E9500B30A88 /* CoursesStructs.swift in Sources */,
-				32F86FC82C870C5F00B30A88 /* ContentViewOld.swift in Sources */,
 				32880C112D5FCACE0089B183 /* ContentView.swift in Sources */,
 				32F86FC62C870C5F00B30A88 /* EpitApp.swift in Sources */,
 			);
@@ -285,6 +361,7 @@
 		};
 		32F86FE82C870C6000B30A88 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 208B4DBA3EC54172DD7B8075 /* Pods-EpitApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -295,6 +372,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"EpitApp/Preview Content\"";
 				DEVELOPMENT_TEAM = V7D87TXZR5;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -324,6 +402,7 @@
 		};
 		32F86FE92C870C6000B30A88 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 72E2FE9ADE9E0858BDC35E4D /* Pods-EpitApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -334,6 +413,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"EpitApp/Preview Content\"";
 				DEVELOPMENT_TEAM = V7D87TXZR5;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
