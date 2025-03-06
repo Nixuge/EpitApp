@@ -42,13 +42,6 @@ struct SettingsView: View {
                 Text("Logout from Office")
             }
             .disabled(!microsoftAuth.isAuthenticated)
-            
-            Button(action: {
-                let serviceURL = "https://prepa-epita.helvetius.net/pegasus/index.php"
-                makeAuthenticatedRequest(to: serviceURL)
-            }) {
-                Text("THE TEST")
-            }
         }
     }
 }

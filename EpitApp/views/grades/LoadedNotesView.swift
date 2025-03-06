@@ -11,12 +11,12 @@ import SwiftUI
 struct LoadedNotesView: View {
     @ObservedObject var pegasusAuthModel: PegasusAuthModel
     @ObservedObject var pegasusParser: PegasusParser
-    var jankOffsetter: JankOffsetter
+    
+    @State private var selectedSemester = 0
     
     init(pegasusAuthModel: PegasusAuthModel, pegasusParser: PegasusParser) {
         self.pegasusAuthModel = pegasusAuthModel
         self.pegasusParser = pegasusParser
-        self.jankOffsetter = JankOffsetter()
     }
     
     var body: some View {
@@ -36,14 +36,22 @@ struct LoadedNotesView: View {
         case .errorParsing:
             Text("Error parsing content.")
         case .done:
-            ScrollView(.vertical) {
-                VStack(spacing: 0) {
-                    ForEach(pegasusParser.data!.semesters) { semester in
-                        PegasusSemesterView(pegasusParser: pegasusParser, jankOffsetter: jankOffsetter, semester: semester)
-                        Divider()
+            VStack {
+                PegasusHeader(pegasusParser: pegasusParser, selectedSemester: $selectedSemester)
+                    .padding()
+                
+                TabView(selection: $selectedSemester) {
+                    ForEach(pegasusParser.data!.semesters.indices, id: \.self) { index in
+                        PegasusSemesterView(pegasusParser: pegasusParser, semester: pegasusParser.data!.semesters[index])
+                            .tag(index)
                     }
                 }
+                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+                .onChange(of: selectedSemester) { newSemester in
+                    print("Hi.")
+                }
             }
+            
         }
     }
 }
