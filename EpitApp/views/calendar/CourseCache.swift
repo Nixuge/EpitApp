@@ -9,7 +9,7 @@ import SwiftUI
 import Combine
 
 class CourseCache: ObservableObject {
-    @ObservedObject var zeusAuthModel: ZeusAuthModel
+    @ObservedObject var zeusAuthModel = ZeusAuthModel.shared
     
     // About dates:
     // Dates are really a fucking pain.
@@ -25,12 +25,6 @@ class CourseCache: ObservableObject {
     
     // TODO: custom group
     let bestGroup = 426
-
-
-    init(zeusAuthModel: ZeusAuthModel) {
-        self.zeusAuthModel = zeusAuthModel
-    }
-    
     
     func buildCourseDictionary(from inputCourses: [Course], startDate: Date, endDate: Date) -> [String: [Course]] {
 //        print("Start: " + startDate.FNT)

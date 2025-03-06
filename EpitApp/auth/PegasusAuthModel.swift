@@ -13,6 +13,8 @@ import Combine
 
 
 class PegasusAuthModel: ObservableObject {
+    static let shared = PegasusAuthModel()
+
     @Published var authState: AuthState = AuthState.unauthenticated
     
     @Published var pegasusPhpSessId: String? {

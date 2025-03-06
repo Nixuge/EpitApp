@@ -9,11 +9,11 @@ import SwiftUI
 
 
 struct CalendarView: View {
-    @ObservedObject var zeusAuthModel: ZeusAuthModel
+    @ObservedObject var zeusAuthModel = ZeusAuthModel.shared
 
     var body: some View {
         if zeusAuthModel.authState == AuthState.authentified {
-            LoadedCalendarView(zeusAuthModel: zeusAuthModel, courseCache: CourseCache(zeusAuthModel: zeusAuthModel))
+            LoadedCalendarView(courseCache: CourseCache())
         } else if zeusAuthModel.authState == AuthState.loading {
             VStack {
                 Text("Logging in...")

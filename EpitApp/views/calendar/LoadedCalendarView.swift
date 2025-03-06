@@ -24,7 +24,7 @@ struct CourseRange : Identifiable {
 }
 
 struct LoadedCalendarView: View {
-    @ObservedObject var zeusAuthModel: ZeusAuthModel
+    @ObservedObject var zeusAuthModel = ZeusAuthModel.shared
     @ObservedObject var courseCache: CourseCache
     @State private var selectedDate = Date()
     @State private var showDatePicker = false

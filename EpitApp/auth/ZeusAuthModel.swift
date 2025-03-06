@@ -15,13 +15,10 @@ enum AuthState {
 
 // TODO: Save tokens to keychain? (unsure)
 class ZeusAuthModel: ObservableObject {
+    static let shared = ZeusAuthModel()
+    
     @Published var authState: AuthState = AuthState.unauthenticated
     
-    @Published var officeToken: String? {
-        didSet {
-            UserDefaults.standard.set(officeToken, forKey: "officeZeusToken")
-        }
-    }
     @Published var token: String? {
         didSet {
             UserDefaults.standard.set(token, forKey: "zeusToken")
@@ -29,14 +26,13 @@ class ZeusAuthModel: ObservableObject {
     }
 
     init() {
-        self.officeToken = UserDefaults.standard.string(forKey: "officeZeusToken")
         self.token = UserDefaults.standard.string(forKey: "zeusToken")
         self.updateValidityFromToken()
-//        if (authState == AuthState.unauthenticated) {
-//            // Attempt to re get token from office token if failed w normal token
-//            debugPrint("Seems to be unauthentified after updateValidityFromToken, calling updateTokenAndValidityFromOfficeToken")
-//            self.updateTokenAndValidityFromOfficeToken()
-//        }
+        if (authState == AuthState.unauthenticated && ZeusSettings.shared.shouldUseOfficeTokenToLogin) {
+            // Attempt to re get token from office token if failed w normal token
+            debugPrint("Seems to be unauthentified after updateValidityFromToken, calling updateTokenAndValidityFromOfficeToken")
+            self.updateTokenAndValidityFromOfficeToken(officeToken: MicrosoftAuth.shared.token)
+        }
     }
     
     private func setValidity(newAuthState: AuthState) {
@@ -50,14 +46,7 @@ class ZeusAuthModel: ObservableObject {
         }
     }
     
-    func setOfficeToken(newOfficeToken: String) {
-        DispatchQueue.main.async {
-            self.officeToken = newOfficeToken
-            self.updateTokenAndValidityFromOfficeToken()
-        }
-    }
-    
-    func updateTokenAndValidityFromOfficeToken() {
+    func updateTokenAndValidityFromOfficeToken(officeToken: String?) {
         // 2 steps in grabbing the token:
         // 1 - login w office and get the #access_token= value in the url
         // 2 - call a post to https://zeus.ionis-it.com/api/User/OfficeLogin w {"accessToken":"TOKEN"} and you'll get back the token used for authorization

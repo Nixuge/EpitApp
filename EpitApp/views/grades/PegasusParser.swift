@@ -12,65 +12,106 @@ enum PegasusProgressState {
     case fetching, parsing, done, errorFetching, errorParsing
 }
 
-struct PegasusYear {
+import Foundation
+
+struct PegasusYear: Identifiable {
+    let id = UUID()
     let columns: [String]
     let year: String
     var semesters: [PegasusSemester]
 }
-struct PegasusSemester {
+
+struct PegasusSemester: Identifiable {
+    let id = UUID()
     let _weirdYear: String
     let label: String
     var localisations: [PegasusLocalisation]
 }
-struct PegasusLocalisation {
+
+struct PegasusLocalisation: Identifiable {
+    let id = UUID()
     let _weirdYear: String
     let label: String
     var compensations: [PegasusCompensation]
 }
-struct PegasusCompensation {
+
+struct PegasusCompensation: Identifiable {
+    let id = UUID()
     let _weirdYear: String
     let label: String
     var UEs: [PegasusUE]
 }
+
 enum UEState {
     case validated, unvalidated
+    
+    func toString() -> String {
+        switch self {
+        case .validated:
+            return "✅"
+        case .unvalidated:
+            return "❌"
+        }
+    }
 }
-struct PegasusUE {
+
+struct PegasusUE: Identifiable {
+    let id = UUID()
     let _weirdYear: String
     let label: String
     let averageNote: Float?
     let state: UEState?
     var ECUEs: [PegasusECUE]
-    
 }
-struct PegasusECUE {
+
+struct PegasusECUE: Identifiable {
+    let id = UUID()
     let _weirdYear: String
     let label: String
     let averageNote: Float?
     let retakeNote: Float?
     var inner: [PegasusECUEInner]
 }
-struct PegasusECUEInner {
+
+struct PegasusECUEInner: Identifiable {
+    let id = UUID()
     let _weirdYear: String
     let label: String
     let averageNote: Float?
     var grades: [PegasusGrade]
 }
-struct PegasusGrade {
+
+struct PegasusGrade: Identifiable {
+    let id = UUID()
     let noteType: String
     let date: String // TODO?: Date
     let note: PegasusGradeValue
 }
+
 enum PegasusGradeValueType {
     case unset, absj, absnj, float
 }
+
 struct PegasusGradeValue {
     let type: PegasusGradeValueType
     let value: Float?
-    
+
     init(type: PegasusGradeValueType, value: Float? = nil) {
         self.type = type
         self.value = value
+    }
+    
+    func displayableString() -> String {
+        if (type == PegasusGradeValueType.absj) {
+            return "ABSJ"
+        }
+        if (type == PegasusGradeValueType.absnj) {
+            return "ABSNJ"
+        }
+        if (type == PegasusGradeValueType.unset) {
+            return "No note"
+        }
+        return String(format: "%.1f", value ?? 0)
     }
 }
 
@@ -146,9 +187,7 @@ class PegasusParser: ObservableObject {
     
     private func parseDate(rawContent: String) -> PegasusYear? {
         do {
-            print("a")
             let doc = try SwiftSoup.parse(rawContent)
-            print("b")
             return try parseYear(doc: doc)
         } catch Exception.Error(let type, let message) {
             self.progressState = .errorParsing

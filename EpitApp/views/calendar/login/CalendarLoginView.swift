@@ -9,16 +9,47 @@ import SwiftUI
 
 
 struct CalendarLoginView: View {
-    @ObservedObject var zeusAuthModel: ZeusAuthModel
+    @ObservedObject var microsoftAuth = MicrosoftAuth.shared
+    @ObservedObject var zeusAuthModel = ZeusAuthModel.shared
     @State private var showWebView = false
     let loginURL = URL(string: "https://zeus.ionis-it.com/login")!
 
     var body: some View {
-        VStack {
+        VStack(spacing: 40) {
             Button(action: {
+                DispatchQueue.main.async {
+                    ZeusSettings.shared.shouldUseOfficeTokenToLogin = true
+                }
+                if (microsoftAuth.isAuthenticated) {
+                    zeusAuthModel.updateTokenAndValidityFromOfficeToken(officeToken: microsoftAuth.token)
+                } else {
+                    microsoftAuth.login { success in
+                        if success {
+                           print("Login successful!")
+                           zeusAuthModel.updateTokenAndValidityFromOfficeToken(officeToken: microsoftAuth.token)
+                       } else {
+                           print("Login failed!")
+                       }
+                    }
+                }
+            }) {
+                Text("Login using Office (recommended)")
+                    .font(.headline)
+                    .padding()
+                    .background(Color.orange)
+                    .foregroundColor(.white)
+                    .cornerRadius(8)
+            }
+            
+            TextSeparator(text: "Or", sidePadding: 20)
+            
+            Button(action: {
+                DispatchQueue.main.async {
+                    ZeusSettings.shared.shouldUseOfficeTokenToLogin = false
+                }
                 showWebView = true
             }) {
-                Text("Login")
+                Text("Login manually")
                     .font(.headline)
                     .padding()
                     .background(Color.orange)
@@ -26,7 +57,7 @@ struct CalendarLoginView: View {
                     .cornerRadius(8)
             }
             .sheet(isPresented: $showWebView) {
-                CalendarLoginWebView(zeusAuthModel: zeusAuthModel, url: loginURL, isPresented: $showWebView)
+                CalendarLoginWebView(url: loginURL, isPresented: $showWebView)
             }
         }
     }

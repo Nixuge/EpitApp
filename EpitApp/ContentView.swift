@@ -8,11 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var zeusAuthModel = ZeusAuthModel()
-    @StateObject private var pegasusAuthModel = PegasusAuthModel()
-    @StateObject private var authViewModel = AuthViewModel()
-//    @State private var selectedTab: Tab = .emploiDuTemps //TODO: Change back
-    @State private var selectedTab: Tab = .notes
+    @State private var selectedTab: Tab = .notes //TODO: Change back
 
     enum Tab {
         case notes
@@ -24,7 +20,7 @@ struct ContentView: View {
     var body: some View {
         TabView(selection: $selectedTab) {
             NavigationView {
-                CalendarView(zeusAuthModel: zeusAuthModel)
+                CalendarView()
             }
             .tabItem {
                 Label("Zeus", systemImage: "calendar")
@@ -32,8 +28,7 @@ struct ContentView: View {
             .tag(Tab.emploiDuTemps)
             
             NavigationView {
-                NotesView(pegasusAuthModel: pegasusAuthModel)
-                    .navigationTitle("Notes")
+                NotesView()
             }
             .tabItem {
                 Label("Pegasus", systemImage: "note.text")
@@ -50,7 +45,7 @@ struct ContentView: View {
             .tag(Tab.tps)
 
             NavigationView {
-                SettingsView(authViewModel: authViewModel, zeusAuthModel: zeusAuthModel, pegasusAuthModel: pegasusAuthModel)
+                SettingsView()
                     .navigationTitle("Settings")
             }
             .tabItem {

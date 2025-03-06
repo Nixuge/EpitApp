@@ -2,7 +2,7 @@ import SwiftUI
 @preconcurrency import WebKit
 
 struct CalendarLoginWebView: UIViewRepresentable {
-    @ObservedObject var zeusAuthModel: ZeusAuthModel
+    @ObservedObject var zeusAuthModel = ZeusAuthModel.shared
     var url: URL
     @Binding var isPresented: Bool
     var onTokenReceived: ((String) -> Void)?
@@ -22,7 +22,7 @@ struct CalendarLoginWebView: UIViewRepresentable {
                 let t = url!.absoluteString.replacingOccurrences(of: "#access_token=", with: "?access_token=")
                 debugPrint("FOUND TOKEN !")
                 let token = getURLParameterValue(url: t, "access_token")!;
-                zeusAuthModel.setOfficeToken(newOfficeToken: token)
+                zeusAuthModel.updateTokenAndValidityFromOfficeToken(officeToken: token)
                 DispatchQueue.main.async {
                     self.isPresented = false
                 }
