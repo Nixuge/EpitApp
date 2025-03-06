@@ -193,7 +193,12 @@ class CourseCache: ObservableObject {
         
         var request = URLRequest(url: url)
         
-        request.addValue(zeusAuthModel.token!, forHTTPHeaderField: "Authorization")
+        guard let token = zeusAuthModel.token else {
+            print("Token is nil.")
+            return
+        }
+        
+        request.addValue(token, forHTTPHeaderField: "Authorization")
         
         do {
             let (data, _) = try await URLSession.shared.data(for: request)

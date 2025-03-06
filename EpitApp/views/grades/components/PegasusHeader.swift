@@ -13,7 +13,7 @@ struct PegasusHeader: View {
     @ObservedObject var pegasusParser: PegasusParser
     @Binding var selectedSemester: Int
     
-    let color = Color.white
+    let color = Color.orange
 
     var body: some View {
         HStack {

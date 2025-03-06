@@ -52,7 +52,7 @@ extension Color {
     }
 }
 
-struct Group: Decodable {
+struct CourseGroup: Decodable {
     let id: Int
 //    let idParent: Int //always null?
     let name: String
@@ -110,7 +110,7 @@ struct Course: Decodable, Hashable {
     let endDate: Date
     let isOnline: Bool
     let rooms: [Room]
-    let groups: [Group]
+    let groups: [CourseGroup]
     let teachers: [Teacher]
     let idSchool: Int
     let schoolName: String
@@ -154,7 +154,7 @@ struct Course: Decodable, Hashable {
         
         isOnline = try container.decode(Bool.self, forKey: .isOnline)
         rooms = try container.decode([Room].self, forKey: .rooms)
-        groups = try container.decode([Group].self, forKey: .groups)
+        groups = try container.decode([CourseGroup].self, forKey: .groups)
         teachers = try container.decode([Teacher].self, forKey: .teachers)
         idSchool = try container.decode(Int.self, forKey: .idSchool)
         schoolName = try container.decode(String.self, forKey: .schoolName)

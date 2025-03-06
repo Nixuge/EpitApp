@@ -11,7 +11,7 @@ import SwiftUI
 struct PegasusECUEView: View {
     var ecue: PegasusECUE
     
-    let color = Color.cyan
+    let color = Color.orange
     
     var body: some View {
         HStack(alignment: .top) {
