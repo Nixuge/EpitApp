@@ -20,10 +20,16 @@ struct PegasusECUEView: View {
                     Text(ecue.label)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(5)
+//                        .foregroundStyle(Color.black)
+                        .background(
+                            RoundedRectangle(cornerSize: CGSize(width: 5, height: 5))
+                                .foregroundStyle(Color.init(hex: "fa4811"))
+                            // ff7d54 and ff6130 are pretty nice (ff3c00)
+                        )
                     
-                    Rectangle()
-                        .frame(maxWidth: .infinity, minHeight: 2, maxHeight: 2, alignment: .leading)
-                        .foregroundStyle(color)
+//                    Rectangle()
+//                        .frame(maxWidth: .infinity, minHeight: 1, maxHeight: 1, alignment: .leading)
+//                        .foregroundStyle(color)
                     
                     if (ecue.inner[0].grades.isEmpty) {
                         Text("No grades").foregroundStyle(Color.gray)
@@ -41,14 +47,20 @@ struct PegasusECUEView: View {
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
+                    
+//                    Rectangle()
+//                        .fill(.gray)
+//                        .frame(height: 5)
+//                        .edgesIgnoringSafeArea(.horizontal)
+
                 }
             }
-            .overlay(
-                RoundedRectangle(cornerRadius: 7)
-                    .stroke(color, lineWidth: 2)
-            )
+//            .overlay(
+//                RoundedRectangle(cornerRadius: 5)
+//                    .stroke(color, lineWidth: 1)
+//            )
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .padding(5)
+//            .padding(5)   
             Spacer()
         }
         .frame(maxWidth: .infinity, alignment: .leading)

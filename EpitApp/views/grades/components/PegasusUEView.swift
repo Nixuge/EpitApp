@@ -12,9 +12,9 @@ struct PegasusUEView: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 0) {
-            UnevenRoundedRectangle(topLeadingRadius: 10, bottomLeadingRadius: 10, bottomTrailingRadius: 10, topTrailingRadius: 10)
-                .fill(Color.white)
-                .frame(minWidth: 4, idealWidth: 4, maxWidth: 4, maxHeight: .infinity, alignment: .topLeading)
+//            UnevenRoundedRectangle(topLeadingRadius: 10, bottomLeadingRadius: 10, bottomTrailingRadius: 10, topTrailingRadius: 10)
+//                .fill(Color.white)
+//                .frame(minWidth: 4, idealWidth: 4, maxWidth: 4, maxHeight: .infinity, alignment: .topLeading)
             
             LazyVStack(pinnedViews: .sectionHeaders) {
                 Section {
@@ -33,13 +33,16 @@ struct PegasusUEView: View {
                         }
                         .padding(5)
                         .font(.headline)
-
-                        UnevenRoundedRectangle(topLeadingRadius: 0, bottomLeadingRadius: 0, bottomTrailingRadius: 20, topTrailingRadius: 20)
-                            .frame(maxWidth: .infinity, minHeight: 4, maxHeight: 4, alignment: .leading)
-                            .foregroundStyle(.white)
+                        .foregroundStyle(.black)
+//
+//                        UnevenRoundedRectangle(topLeadingRadius: 20, bottomLeadingRadius: 20, bottomTrailingRadius: 20, topTrailingRadius: 20)
+//                            .frame(maxWidth: .infinity, minHeight: 4, maxHeight: 4, alignment: .leading)
+//                            .foregroundStyle(.white)
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                    .background(Color.black)
+                    .background(
+                        RoundedRectangle(cornerSize: CGSize(width: 5, height: 5))
+                    )
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
