@@ -12,7 +12,12 @@ import Security
 class KeychainHelper {
     static let shared = KeychainHelper()
 
-    func saveToken(_ token: String, accountName: String) {
+    func saveToken(_ token: String?, accountName: String) {
+        guard let token = token else {
+            deleteToken(accountName: accountName)
+            return
+        }
+        
         guard let data = token.data(using: .utf8) else { return }
 
         let query: [String: Any] = [

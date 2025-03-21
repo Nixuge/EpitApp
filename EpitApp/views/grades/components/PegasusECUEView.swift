@@ -23,8 +23,8 @@ struct PegasusECUEView: View {
 //                        .foregroundStyle(Color.black)
                         .background(
                             RoundedRectangle(cornerSize: CGSize(width: 5, height: 5))
-                                .foregroundStyle(Color.init(hex: "fa4811"))
-                            // ff7d54 and ff6130 are pretty nice (ff3c00)
+                                .foregroundStyle(Color.pegasusBackgroundColor)
+                            // ff7d54 and ff6130 are pretty nice (ff3c00) (fa4811)
                         )
                     
 //                    Rectangle()
@@ -37,11 +37,18 @@ struct PegasusECUEView: View {
                     } else {
                         ForEach(ecue.inner[0].grades) { grade in
                             HStack(spacing: 8) {
-                                Text("\(grade.noteType): \(grade.note.displayableString())")
-                                Text("\(grade.date)")
-                                    .font(.caption)
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-                                    .foregroundColor(.gray)
+                                if (grade.noteType.contains("Moy")) {
+                                    Text("\(grade.noteType): \(grade.note.displayableString())")
+                                        .font(.headline)
+//                                        .foregroundStyle(Color.init(hex: "fc6262"))
+                                } else {
+                                    Text("\(grade.noteType): \(grade.note.displayableString())")
+
+                                    Text("\(grade.date)")
+                                        .font(.caption)
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+                                        .foregroundColor(.gray)
+                                }  
                             }
                             .padding(5)
                         }

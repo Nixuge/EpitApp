@@ -17,7 +17,7 @@ struct NotesView: View {
             } else if pegasusAuthModel.authState == .loading {
                 VStack {
                     Text("Logging in...")
-                    ProgressView().progressViewStyle(CircularProgressViewStyle(tint: .orange))
+                    ProgressView().progressViewStyle(CircularProgressViewStyle(tint: .pegasusTextColor))
                 }
             } else {
                 PegasusLoginView(pegasusAuthModel: pegasusAuthModel)

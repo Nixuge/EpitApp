@@ -16,7 +16,7 @@ struct CalendarLoginView: View {
 
     var body: some View {
         VStack(spacing: 40) {
-            Button(action: {
+            FancyButton(text: "Login using Office (recommended)") {
                 DispatchQueue.main.async {
                     ZeusSettings.shared.shouldUseOfficeTokenToLogin = true
                 }
@@ -32,32 +32,27 @@ struct CalendarLoginView: View {
                        }
                     }
                 }
-            }) {
-                Text("Login using Office (recommended)")
-                    .font(.headline)
-                    .padding()
-                    .background(Color.orange)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
             }
             
             TextSeparator(text: "Or", sidePadding: 20)
             
-            Button(action: {
-                DispatchQueue.main.async {
-                    ZeusSettings.shared.shouldUseOfficeTokenToLogin = false
+            VStack {
+                FancySheetButton(
+                    text: "Login using in-app browser",
+                    isPresented: $showWebView,
+                    action: {
+                        DispatchQueue.main.async {
+                            ZeusSettings.shared.shouldUseOfficeTokenToLogin = false
+                        }
+                        showWebView = true
+                    },
+                    sheetContent: {
+                        CalendarLoginWebView(url: loginURL, isPresented: $showWebView)
+                    })
+                
+                FancyButton(text: "Logout from browser") {
+                    deleteAllWebKitCookies()
                 }
-                showWebView = true
-            }) {
-                Text("Login manually")
-                    .font(.headline)
-                    .padding()
-                    .background(Color.orange)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-            }
-            .sheet(isPresented: $showWebView) {
-                CalendarLoginWebView(url: loginURL, isPresented: $showWebView)
             }
         }
     }

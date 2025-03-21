@@ -15,18 +15,22 @@ struct PegasusLoginView: View {
 
     var body: some View {
         VStack {
-            Button(action: {
-                showWebView = true
-            }) {
-                Text("Login")
-                    .font(.headline)
-                    .padding()
-                    .background(Color.orange)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-            }
-            .sheet(isPresented: $showWebView) {
-                PegasusLoginWebView(pegasusAuthModel: pegasusAuthModel, url: loginURL, isPresented: $showWebView)
+            FancySheetButton(
+                text: "Login using in-app browser",
+                color: .pegasusBackgroundColor,
+                isPresented: $showWebView,
+                action: {
+                    DispatchQueue.main.async {
+                        ZeusSettings.shared.shouldUseOfficeTokenToLogin = false
+                    }
+                    showWebView = true
+                },
+                sheetContent: {
+                    PegasusLoginWebView(pegasusAuthModel: pegasusAuthModel, url: loginURL, isPresented: $showWebView)
+                })
+            
+            FancyButton(text: "Logout from browser", color: .pegasusBackgroundColor) {
+                deleteAllWebKitCookies()
             }
         }
     }

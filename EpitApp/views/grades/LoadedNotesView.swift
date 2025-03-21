@@ -26,12 +26,12 @@ struct LoadedNotesView: View {
                     case .fetching:
                         VStack {
                             Text("Fetching content...")
-                            ProgressView().progressViewStyle(CircularProgressViewStyle(tint: .orange))
+                            ProgressView().progressViewStyle(CircularProgressViewStyle(tint: .pegasusTextColor))
                         }
                     case .parsing:
                         VStack {
                             Text("Parsing content...")
-                            ProgressView().progressViewStyle(CircularProgressViewStyle(tint: .orange))
+                            ProgressView().progressViewStyle(CircularProgressViewStyle(tint: .pegasusTextColor))
                         }
                     case .errorFetching:
                         Text("Error fetching content.")

@@ -117,7 +117,7 @@ struct LoadedCalendarView: View {
     }
     
     // Note: The delay helps avoid the weird rolback thing when going too fast. Still not perfect tho.
-    private func updateDisplayedDates(for date: Date, delayMS: Float = 100) {
+    private func updateDisplayedDates(for date: Date, delayMS: Float = 120) {
         DispatchQueue.main.asyncAfter(deadline: .now().advanced(by: .milliseconds(Int(delayMS)))) {
             let calendar = Calendar.current
             guard let startDate = calendar.date(byAdding: .day, value: -preloadedTabAmount / 2, to: date) else {

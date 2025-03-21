@@ -8,12 +8,14 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var selectedTab: Tab = .notes //TODO: Change back
+    @State private var selectedTab: Tab = .absences //TODO: Change back
+    
+    @State private var color: Color = .orange
 
     enum Tab {
-        case notes
-        case emploiDuTemps
-        case tps
+        case zeus
+        case pegasus
+        case absences
         case settings
     }
 
@@ -24,8 +26,9 @@ struct ContentView: View {
             }
             .tabItem {
                 Label("Zeus", systemImage: "calendar")
+
             }
-            .tag(Tab.emploiDuTemps)
+            .tag(Tab.zeus)
             
             NavigationView {
                 NotesView()
@@ -33,16 +36,16 @@ struct ContentView: View {
             .tabItem {
                 Label("Pegasus", systemImage: "note.text")
             }
-            .tag(Tab.notes)
+            .tag(Tab.pegasus)
 
             NavigationView {
                 AbsencesView()
-                    .navigationTitle("Absences")
+//                    .navigationTitle("Absences")
             }
             .tabItem {
                 Label("Absences", systemImage: "timer")
             }
-            .tag(Tab.tps)
+            .tag(Tab.absences)
 
             NavigationView {
                 SettingsView()
@@ -52,6 +55,26 @@ struct ContentView: View {
                 Label("Settings", systemImage: "gearshape")
             }
             .tag(Tab.settings)
+        }
+        .tint(color)
+        .onChange(of: selectedTab, perform: { tab in
+            changeColorToTabColor(selectedTab)
+        })
+        .onAppear {
+            changeColorToTabColor(selectedTab)
+        }
+    }
+    
+    func changeColorToTabColor(_ newTab: Tab) {
+        switch newTab {
+        case .zeus:
+            color = .orange
+        case .pegasus:
+            color = .pegasusTextColor
+        case .absences:
+            color = .green
+        case .settings:
+            color = .white
         }
     }
 }

@@ -8,7 +8,18 @@
 import SwiftUI
 
 struct AbsencesView: View {
+    @ObservedObject var authModel: AbsencesAuthModel = AbsencesAuthModel.shared
+    
+    var absencesCache = AbsencesCache.shared
+
     var body: some View {
-        Text("Not implemented yet.")
+        if (authModel.authState == .authentified) {
+            AbsencesLoadedView()
+                .onAppear {
+                    absencesCache.grabNewContent()
+                }
+        } else {
+            AbsencesLoginView()
+        }
     }
 }

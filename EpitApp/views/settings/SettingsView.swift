@@ -12,36 +12,51 @@ struct SettingsView: View {
     @ObservedObject var zeusAuthModel = ZeusAuthModel.shared
     @ObservedObject var pegasusAuthModel = PegasusAuthModel.shared
     @ObservedObject var microsoftAuth = MicrosoftAuth.shared
+    @ObservedObject var absencesAuth = AbsencesAuthModel.shared
+
     
     var body: some View {
-        VStack(spacing: 10) {
-            Button(action: {
-                zeusAuthModel.logout()
-            }) {
-                Text("Logout from zeus")
+        VStack(spacing: 50) {
+            VStack(spacing: 15) {
+                FancyButton(
+                    text: "Logout from Zeus",
+                    isDisabled: zeusAuthModel.authState != .authentified
+                ) {
+                    zeusAuthModel.logout()
+                }
+                
+                FancyButton(
+                    text: "Logout from Pegasus",
+                    color: .pegasusBackgroundColor,
+                    isDisabled: pegasusAuthModel.authState != .authentified
+                ) {
+                    pegasusAuthModel.logout()
+                }
+                
+                FancyButton(
+                    text: "Logout from Absences",
+                    color: .green,
+                    isDisabled: absencesAuth.authState != .authentified
+                ) {
+                    absencesAuth.logout()
+                }
+                
+                FancyButton(
+                    text: "Logout from Office",
+                    color: .red,
+                    isDisabled: !microsoftAuth.isAuthenticated
+                ) {
+                    microsoftAuth.logout()
+                }
             }
-            .disabled(zeusAuthModel.authState != .authentified)
             
-            Button(action: {
-                pegasusAuthModel.logout()
-            }) {
-                Text("Logout from Pegasus")
-            }
-            .disabled(pegasusAuthModel.authState != .authentified)
-            
-            Button(action: {
+            FancyButton(
+                text: "Login to Office",
+                color: .red,
+                isDisabled: microsoftAuth.isAuthenticated
+            ) {
                 microsoftAuth.login()
-            }) {
-                Text("Login to Office")
             }
-            .disabled(microsoftAuth.isAuthenticated)
-            
-            Button(action: {
-                microsoftAuth.logout()
-            }) {
-                Text("Logout from Office")
-            }
-            .disabled(!microsoftAuth.isAuthenticated)
         }
     }
 }

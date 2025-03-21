@@ -1,19 +1,19 @@
 //
-//  PegasusHeader.swift
+//  AbsencesSemesterHeader.swift
 //  EpitApp
 //
-//  Created by Quenting on 06/03/2025.
+//  Created by Quenting on 21/03/2025.
 //
 
 
 import SwiftUI
 
 
-struct PegasusHeader: View {
-    @ObservedObject var pegasusParser: PegasusParser
+struct AbsencesHeader: View {
+    @ObservedObject var absencesCache: AbsencesCache = AbsencesCache.shared
     @Binding var selectedSemester: Int
     
-    let color = Color.pegasusTextColor
+    let color = Color.green
 
     var body: some View {
         HStack {
@@ -27,10 +27,10 @@ struct PegasusHeader: View {
 
             Spacer()
             
-            // TODO: Tap for overview of it.
             Button(action: {
             }) {
-                Text(pegasusParser.data?.semesters[selectedSemester].label ?? "Unknown")
+                let selected = absencesCache.content[selectedSemester]
+                Text("\(selected.levelName) (\(selected.promo))")
                     .foregroundStyle(color)
             }
 
@@ -40,9 +40,9 @@ struct PegasusHeader: View {
                 selectedSemester += 1
             }) {
                 Image(systemName: "arrow.right")
-                    .foregroundStyle(selectedSemester >= (pegasusParser.data?.semesters.count ?? 1) - 1 ? .gray : color)
+                    .foregroundStyle(selectedSemester >= absencesCache.content.count - 1 ? .gray : color)
             }
-            .disabled(selectedSemester >= (pegasusParser.data?.semesters.count ?? 1) - 1)
+            .disabled(selectedSemester >= absencesCache.content.count - 1)
         }
     }
 }
