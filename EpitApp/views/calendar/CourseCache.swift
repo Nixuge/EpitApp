@@ -188,43 +188,66 @@ class CourseCache: ObservableObject {
         let startDateString = isoDateFormatter.string(from: startOfWeek!)
         let endDateString = isoDateFormatter.string(from: endOfWeek!)
         
-        
-        let url = URL(string: "https://zeus.ionis-it.com/api/reservation/filter/displayable?groups=\(bestGroup)&startDate=\(startDateString)&endDate=\(endDateString)")!
-        
-        var request = URLRequest(url: url)
-        
         guard let token = zeusAuthModel.token else {
             print("Token is nil.")
             return
         }
         
-        request.addValue(token, forHTTPHeaderField: "Authorization")
+        let url = URL(string: "https://zeus.ionis-it.com/api/reservation/filter/displayable?groups=\(bestGroup)&startDate=\(startDateString)&endDate=\(endDateString)")!
         
-        do {
-            let (data, _) = try await URLSession.shared.data(for: request)
-            //let jsonData = jsonString.data(using: .utf8)!
-//            print(String(data: data, encoding: .utf8));
-            //print(String(decoding: data, as: UTF8.self))
-            let coursesParsed: [Course] = try! JSONDecoder().decode([Course].self, from: data)
-//            print(coursesParsed)
-//            let coursesOrdered = buildCourseRanges(from: coursesParsed)
+        
+        
+        
+        
+        var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData)
+        request.httpMethod = "GET"
+        
+        request.addValue(token, forHTTPHeaderField: "Authorization")
+
+        let session = URLSession.shared
+        
+        let dataTask = session.dataTask(with: request as URLRequest) { (data, response, error) -> Void in
+            guard let res = response as? HTTPURLResponse else {
+                print("Failed coursecache grabbing at HTTPURLResponse step")
+                return
+            }
+            guard res.statusCode == 200 else {
+                print("Failed coursecache grabbing at statuscode step: \(res.statusCode)")
+                return
+            }
+            guard let data = data else {
+                print("Failed coursecache grabbing at data unwrap step")
+                return
+            }
+            
+            let coursesParsed: [Course]
+            do {
+                coursesParsed = try JSONDecoder().decode([Course].self, from: data)
+            } catch {
+                print("Failed coursecache grabbing at JSON decoding step: \(error)")
+                return
+            }
+            
+            print("Done grabbing content.")
+
             print("===========================================================================================================================================================================================================================================================================================================")
 
 //            print(coursesOrdered.count)
-            let res = buildCourseDictionary(
+            let result = self.buildCourseDictionary(
                 from: coursesParsed,
                 startDate: startOfWeek!,
                 endDate: endOfWeek!
             )
-            let coursesNoTime = buildRangesFromDictionary(from: res)
-            let blanked = fillInBlanks(from: coursesNoTime)
+            let coursesNoTime = self.buildRangesFromDictionary(from: result)
+            let blanked = self.fillInBlanks(from: coursesNoTime)
             
-            let final = addSaveTime(from: blanked)
+            let final = self.addSaveTime(from: blanked)
             for (date, coursesForDate) in final {
-                courses[date] = coursesForDate
+                self.courses[date] = coursesForDate
             }
-        } catch {
-            print("FAIL !") // TODO: Handle
+            
         }
+        print("Ok yes")
+        dataTask.resume()
     }
 }
