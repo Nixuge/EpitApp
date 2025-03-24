@@ -131,15 +131,16 @@ class AbsencesAuthModel: ObservableObject {
         
             print("Done logging in.")
             print(authRes)
-            self.setValidity(newAuthState: .authentified)
             self.user = username
             self.password = password
             self.token = authRes.access_token
+            self.setValidity(newAuthState: .authentified)
         }
         dataTask.resume()
     }
     
     func logout() {
         setValidity(newAuthState: .unauthenticated)
+        self.token = nil
     }
 }

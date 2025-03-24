@@ -37,7 +37,7 @@ struct AbsencesSemester: Decodable {
 }
 
 enum AbsencesCacheState {
-    case loading, loaded
+    case unloaded, loading, loaded
 }
 
 
@@ -46,7 +46,7 @@ class AbsencesCache: ObservableObject {
 
     @ObservedObject var absencesAuthModel = AbsencesAuthModel.shared
     
-    @Published var state: AbsencesCacheState = .loaded
+    @Published var state: AbsencesCacheState = .unloaded
     @Published var content: [AbsencesSemester] = []
     
     init() {
@@ -65,21 +65,21 @@ class AbsencesCache: ObservableObject {
     }
     
     func setState(_ newState: AbsencesCacheState) {
-//        DispatchQueue.main.async {
+        DispatchQueue.main.async {
             self.state = newState
-//        }
+        }
     }
     
     func grabNewContent(completion: @escaping (Bool) -> Void = { _ in }, force: Bool = false) {
         if (!force && !content.isEmpty) {
             print("grabNewContent: Non empty content and no force, returning.")
-            completion(true)
+            completion(false)
             return
         }
         
         guard let token = absencesAuthModel.token else {
             print("grabNewContent: token is nil.")
-            completion(true)
+            completion(false)
             return
         }
         
