@@ -23,6 +23,7 @@ struct SettingsView: View {
                     isDisabled: zeusAuthModel.authState != .authentified
                 ) {
                     zeusAuthModel.logout()
+                    ZeusSettings.shared.shouldUseOfficeTokenToLogin = false
                 }
                 
                 FancyButton(

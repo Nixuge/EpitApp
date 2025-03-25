@@ -19,3 +19,17 @@ func deleteAllWebKitCookies() {
         }
     }
 }
+
+func deleteCookieForDomain(_ domain: String) {
+    HTTPCookieStorage.shared.removeCookies(since: Date.distantPast)
+
+    let dateStore = WKWebsiteDataStore.default()
+    dateStore.fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes()) { records in
+        records.forEach { record in
+            if (record.displayName == domain) {
+                dateStore.removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
+                print("Cookie ::: \(record) deleted")
+            }
+        }
+    }
+}

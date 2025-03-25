@@ -21,6 +21,7 @@ struct CalendarLoginView: View {
                     ZeusSettings.shared.shouldUseOfficeTokenToLogin = true
                 }
                 if (microsoftAuth.isAuthenticated) {
+                    print("Authentified, trying direct.")
                     zeusAuthModel.updateTokenAndValidityFromOfficeToken(officeToken: microsoftAuth.token)
                 } else {
                     microsoftAuth.login { success in

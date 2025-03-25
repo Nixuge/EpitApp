@@ -12,17 +12,17 @@ import Security
 class KeychainHelper {
     static let shared = KeychainHelper()
 
-    func saveToken(_ token: String?, accountName: String) {
-        guard let token = token else {
-            deleteToken(accountName: accountName)
+    func saveValue(_ value: String?, key: String) {
+        guard let value = value else {
+            deleteToken(accountName: key)
             return
         }
         
-        guard let data = token.data(using: .utf8) else { return }
+        guard let data = value.data(using: .utf8) else { return }
 
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrAccount as String: accountName,
+            kSecAttrAccount as String: key,
             kSecValueData as String: data
         ]
 
@@ -31,10 +31,10 @@ class KeychainHelper {
         SecItemAdd(query as CFDictionary, nil)
     }
 
-    func retrieveToken(accountName: String) -> String? {
+    func retrieveValue(key: String) -> String? {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
-            kSecAttrAccount as String: accountName,
+            kSecAttrAccount as String: key,
             kSecReturnData as String: kCFBooleanTrue!,
             kSecMatchLimit as String: kSecMatchLimitOne
         ]

@@ -8,9 +8,13 @@ import SwiftUI
 
 class ZeusSettings: ObservableObject {
     static let shared = ZeusSettings()
-    @Published public var shouldUseOfficeTokenToLogin: Bool
+    @Published public var shouldUseOfficeTokenToLogin: Bool {
+        didSet {
+            UserDefaults.standard.set(shouldUseOfficeTokenToLogin, forKey: "zeusSettings.shouldUseOfficeTokenToLogin")
+        }
+    }
         
     init() {
-        self.shouldUseOfficeTokenToLogin = false
+        self.shouldUseOfficeTokenToLogin = UserDefaults.standard.bool(forKey: "zeusSettings.shouldUseOfficeTokenToLogin")
     }
 }
