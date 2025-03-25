@@ -35,29 +35,27 @@ class AbsencesAuthModel: ObservableObject {
     
     @Published var token: String? {
         didSet {
-            KeychainHelper.shared.saveToken(token, accountName: "absencesToken")
+            KeychainHelper.shared.saveValue(token, key: "absencesToken")
         }
     }
     
     @Published var user: String? {
         didSet {
-            KeychainHelper.shared.saveToken(user, accountName: "absencesUser")
+            KeychainHelper.shared.saveValue(user, key: "absencesUser")
         }
     }
     @Published var password: String? {
         didSet {
-            KeychainHelper.shared.saveToken(password, accountName: "absencesPassword")
+            KeychainHelper.shared.saveValue(password, key: "absencesPassword")
         }
     }
 
     init() {
         self.authState = .unauthenticated
         
-        self.token = KeychainHelper.shared.retrieveToken(accountName: "absencesToken")
-        self.user = KeychainHelper.shared.retrieveToken(accountName: "absencesUser")
-        self.password = KeychainHelper.shared.retrieveToken(accountName: "absencesPassword")
-        
-        
+        self.token = KeychainHelper.shared.retrieveValue(key: "absencesToken")
+        self.user = KeychainHelper.shared.retrieveValue(key: "absencesUser")
+        self.password = KeychainHelper.shared.retrieveValue(key: "absencesPassword")
     }
                                             
         
@@ -93,6 +91,7 @@ class AbsencesAuthModel: ObservableObject {
     
     func login(username: String, password: String) {
         if (authState == .loading) {
+            print("Already loading, returning...")
             return
         }
         setValidity(newAuthState: .loading)

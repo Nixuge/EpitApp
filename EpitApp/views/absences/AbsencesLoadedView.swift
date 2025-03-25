@@ -13,14 +13,6 @@ struct AbsencesLoadedView: View {
     @State var selectedSemester: Int = 0
 
     var body: some View {
-        switch cache.state {
-        case .unloaded:
-            Text("Unloaded cache ?") // Should not happen
-            
-        case .loading:
-            Text("Loading content...")
-        
-        case .loaded:
             VStack {
                 AbsencesHeader(selectedSemester: $selectedSemester)
                     .padding()
@@ -33,6 +25,6 @@ struct AbsencesLoadedView: View {
                 }
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
             }
-        }
+//        }
     }
 }

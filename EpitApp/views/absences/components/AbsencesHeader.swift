@@ -26,11 +26,12 @@ struct AbsencesHeader: View {
             .disabled(selectedSemester == 0)
 
             Spacer()
-            
+                
             Button(action: {
             }) {
                 let selected = absencesCache.content[selectedSemester]
-                Text("\(selected.levelName) (\(selected.promo))")
+                // Without the .description i get an annoying space (eg 2 029 instead of 2029)
+                Text("\(selected.levelName) (\(selected.promo.description))")
                     .foregroundStyle(color)
             }
 

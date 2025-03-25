@@ -7,16 +7,33 @@
 
 import Foundation
 
+// Avoid re setting dateFormat every time.
+private struct DateFormatterHelper {
+    static let FNTFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter
+    }()
+    
+    static let LeAFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd-MM-yyyy-MM à HH:mm"
+        return formatter
+    }()
+}
 
-let dateExtensionFormatter = DateFormatter()
+
 
 extension Date {
     var formattedNoTimezone: String {
-        dateExtensionFormatter.dateFormat = "yyyy-MM-dd"
-        return dateExtensionFormatter.string(from: self)
+        return DateFormatterHelper.FNTFormatter.string(from: self)
     }
     var FNT: String {
         return formattedNoTimezone
+    }
+    
+    var formatLeA: String {
+        return DateFormatterHelper.LeAFormatter.string(from: self)
     }
     
     var startMinutesFromDay: Int {

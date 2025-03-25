@@ -14,6 +14,7 @@ struct EpitApp: App {
         WindowGroup {
             ContentView().tint(.orange).onOpenURL { url in
                 // sourceApplication hardcoded for now.
+                // TODO: Find a way in SwiftUI to NOT HARDCODE IT LIKE THAT.
                 MSALPublicClientApplication.handleMSALResponse(
                     url,
                     sourceApplication: "com.microsoft.azureauthenticator"

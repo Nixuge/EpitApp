@@ -11,13 +11,12 @@ struct AbsencesSemesterView: View {
     var semester: AbsencesSemester
 
     var body: some View {
-        VStack {
-            Text("To be done.")
-            Text("Semester \(semester.levelName)")
-            Text("Amount of periods: \(semester.periods.count)")
+        ScrollView {
+            VStack {
+                ForEach(semester.periods) { period in
+                    AbsencesPeriodView(period: period)
+                }
+            }
         }
-        .padding()
-        .background(Color.gray.opacity(0.15))
-        .cornerRadius(10)
     }
 }

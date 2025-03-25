@@ -7,13 +7,34 @@
 
 import SwiftUI
 
-struct Absence: Decodable {
-//    var id = UUID()
+struct Absence: Decodable, Identifiable {
+    var id = UUID()
     let slotId: Int
-    let startDate: String
+    let startDate: Date
     let subjectName: String
     let justificatory: String?
     let mandatory: Bool
+    
+    
+    private enum CodingKeys: String, CodingKey {
+        case slotId
+        case startDate
+        case subjectName
+        case justificatory
+        case mandatory
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        slotId = try container.decode(Int.self, forKey: .slotId)
+
+        let startDateStr = try container.decode(String.self, forKey: .startDate)
+        startDate = IsoDateFormatter.date(from: startDateStr)!
+
+        subjectName = try container.decode(String.self, forKey: .subjectName)
+        justificatory = try container.decode(String?.self, forKey: .justificatory)
+        mandatory = try container.decode(Bool.self, forKey: .mandatory)
+    }
 }
 
 struct AbsencesPeriod: Decodable, Identifiable {
@@ -37,7 +58,7 @@ struct AbsencesSemester: Decodable {
 }
 
 enum AbsencesCacheState {
-    case unloaded, loading, loaded
+    case loading, loaded
 }
 
 
@@ -46,31 +67,29 @@ class AbsencesCache: ObservableObject {
 
     @ObservedObject var absencesAuthModel = AbsencesAuthModel.shared
     
-    @Published var state: AbsencesCacheState = .unloaded
+    @Published var state: AbsencesCacheState = .loading
     @Published var content: [AbsencesSemester] = []
     
-    init() {
-        // First try to just grab w whathever token is available.
-        // If can't grab, try to login w saved logins.
-        // Otherwise have user enter password (done through the login screen when authstate isn't valid)
+    func onAppear() {
         grabNewContent(completion: { (success) in
             print("DONE GRABBING: \(success)")
             if (success) {
                 self.absencesAuthModel.setValidity(newAuthState: .authentified)
             } else {
                 self.absencesAuthModel.loginWithSaved()
-                // TODO: Rn grabnewcontent is done on onappear in absencesview, could be nice if done here instead.
             }
         })
     }
     
     func setState(_ newState: AbsencesCacheState) {
-        DispatchQueue.main.async {
+//        DispatchQueue.main.async {
             self.state = newState
-        }
+//        }
     }
     
     func grabNewContent(completion: @escaping (Bool) -> Void = { _ in }, force: Bool = false) {
+        print("grabNewContent request received.")
+        
         if (!force && !content.isEmpty) {
             print("grabNewContent: Non empty content and no force, returning.")
             completion(false)
@@ -83,7 +102,9 @@ class AbsencesCache: ObservableObject {
             return
         }
         
-        setState(.loading)
+//        setState(.loading)
+        self.state = .loading
+        print("State: \(self.state)")
         let url = NSURL(string: "https://absences.epita.net/api/Users/student/grades")
         var request = URLRequest(url: url! as URL, cachePolicy: .reloadIgnoringLocalCacheData)
         request.httpMethod = "GET"
@@ -128,7 +149,6 @@ class AbsencesCache: ObservableObject {
             self.setState(.loaded)
             completion(true)
         }
-        print("Ok yes")
         dataTask.resume()
     }
 }
