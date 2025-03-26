@@ -11,6 +11,7 @@ struct FancyTextInput: View {
     @Binding var text: String
     var placeholder: String = ""
     var cornerRadius: CGFloat = 5
+    var color: Color = Color.green
     
     var body: some View {
         TextField(placeholder, text: $text)
@@ -18,7 +19,7 @@ struct FancyTextInput: View {
             .textInputAutocapitalization(.never)
             .overlay {
                 RoundedRectangle(cornerSize: CGSize(width: cornerRadius, height: cornerRadius))
-                    .stroke(.green, lineWidth: 1)
+                    .stroke(color, lineWidth: 1)
             }
             .font(.system(size: 20))
     

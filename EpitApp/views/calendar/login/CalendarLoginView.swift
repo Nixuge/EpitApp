@@ -22,7 +22,18 @@ struct CalendarLoginView: View {
                 }
                 if (microsoftAuth.isAuthenticated) {
                     print("Authentified, trying direct.")
-                    zeusAuthModel.updateTokenAndValidityFromOfficeToken(officeToken: microsoftAuth.token)
+                    zeusAuthModel.updateTokenAndValidityFromOfficeToken(officeToken: microsoftAuth.token) { success in
+                        if success {
+                            print("Direct login successful!")
+                        } else {
+                            print("Direct login failed, trying to refresh token.")
+                            microsoftAuth.refreshTokenUsingSavedId { success in
+                                if success {
+                                    zeusAuthModel.updateTokenAndValidityFromOfficeToken(officeToken: self.microsoftAuth.token)
+                                }
+                            }
+                        }
+                    }
                 } else {
                     microsoftAuth.login { success in
                         if success {

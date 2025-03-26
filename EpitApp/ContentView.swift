@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var selectedTab: Tab = .absences //TODO: Change back
+    @State private var selectedTab: Tab = .zeus //TODO: Change back
     
     @State private var color: Color = .orange
 

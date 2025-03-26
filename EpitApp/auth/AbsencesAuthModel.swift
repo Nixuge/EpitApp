@@ -57,27 +57,11 @@ class AbsencesAuthModel: ObservableObject {
         self.user = KeychainHelper.shared.retrieveValue(key: "absencesUser")
         self.password = KeychainHelper.shared.retrieveValue(key: "absencesPassword")
     }
-                                            
-        
-//        self.updateValidityFromToken()
-//        if (authState == AuthState.unauthenticated && ZeusSettings.shared.shouldUseOfficeTokenToLogin) {
-//            // Attempt to re get token from office token if failed w normal token
-//            debugPrint("Seems to be unauthentified after updateValidityFromToken, calling updateTokenAndValidityFromOfficeToken")
-//            self.updateTokenAndValidityFromOfficeToken(officeToken: MicrosoftAuth.shared.token)
-//        }
-//    }
     
     func setValidity(newAuthState: AbsencesAuthState) {
         DispatchQueue.main.async {
             self.authState = newAuthState
         }
-//        DispatchQueue.main.async {
-//            self.authState = newAuthState
-//            if (newAuthState == AuthState.unauthenticated) {
-//                self.token = nil;
-//                // tej defaults
-//            }
-//        }
     }
     
     func loginWithSaved() {

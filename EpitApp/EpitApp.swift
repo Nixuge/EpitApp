@@ -12,9 +12,11 @@ import MSAL
 struct EpitApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView().tint(.orange).onOpenURL { url in
+            ContentView().tint(.orange)
+                .onOpenURL { url in
                 // sourceApplication hardcoded for now.
                 // TODO: Find a way in SwiftUI to NOT HARDCODE IT LIKE THAT.
+                // AppDellegate's application function DOES NOT GET CALLED
                 MSALPublicClientApplication.handleMSALResponse(
                     url,
                     sourceApplication: "com.microsoft.azureauthenticator"

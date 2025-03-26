@@ -35,6 +35,7 @@ struct AbsencesLoginView: View {
                     Text("" )
                 }
             }
+            .padding(5)
         }
     }
 }
