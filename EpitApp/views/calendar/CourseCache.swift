@@ -23,8 +23,6 @@ class CourseCache: ObservableObject {
     // Note: Unsure if optimized.
     @Published var courses: [String: (TimeInterval, [CourseRange])] = [:]
     
-    // TODO: custom group
-    let bestGroup = 426
     
     func buildCourseDictionary(from inputCourses: [Course], startDate: Date, endDate: Date) -> [String: [Course]] {
 //        print("Start: " + startDate.FNT)
@@ -193,11 +191,12 @@ class CourseCache: ObservableObject {
             return
         }
         
-        let url = URL(string: "https://zeus.ionis-it.com/api/reservation/filter/displayable?groups=\(bestGroup)&startDate=\(startDateString)&endDate=\(endDateString)")!
+        guard let classId = SelectedIdCache.shared.id else {
+            print("Class id is null")
+            return
+        }
         
-        
-        
-        
+        let url = URL(string: "https://zeus.ionis-it.com/api/reservation/filter/displayable?groups=\(classId)&startDate=\(startDateString)&endDate=\(endDateString)")!
         
         var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData)
         request.httpMethod = "GET"

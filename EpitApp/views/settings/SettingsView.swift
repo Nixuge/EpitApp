@@ -13,6 +13,8 @@ struct SettingsView: View {
     @ObservedObject var pegasusAuthModel = PegasusAuthModel.shared
     @ObservedObject var microsoftAuth = MicrosoftAuth.shared
     @ObservedObject var absencesAuth = AbsencesAuthModel.shared
+    
+    @ObservedObject var zeusSelectedIdCache = SelectedIdCache.shared
 
     
     var body: some View {
@@ -57,6 +59,14 @@ struct SettingsView: View {
                 isDisabled: microsoftAuth.isAuthenticated
             ) {
                 microsoftAuth.login()
+            }
+            
+            FancyButton(
+                text: "Reset class Id for Zeus",
+                color: .purple,
+                isDisabled: zeusSelectedIdCache.id == nil
+            ) {
+                zeusSelectedIdCache.id = nil
             }
         }
     }

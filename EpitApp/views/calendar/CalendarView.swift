@@ -10,22 +10,31 @@ import SwiftUI
 
 struct CalendarView: View {
     @ObservedObject var zeusAuthModel = ZeusAuthModel.shared
+    @ObservedObject var selectedIdCache = SelectedIdCache.shared
+    
     @State private var currentView: AuthState?
 
     var body: some View {
         VStack {
             if let view = currentView {
                 Group {
-                    switch view {
-                    case .authentified:
-                        LoadedCalendarView(courseCache: CourseCache())
-                    case .loading:
-                        VStack {
-                            Text("Logging in...")
-                            ProgressView().progressViewStyle(CircularProgressViewStyle(tint: .orange))
+                    if (selectedIdCache.id == nil) {
+                        ChooseIdView()
+                            .onAppear {
+                                SelectedIdCache.shared.getIdList()
+                            }
+                    } else {
+                        switch view {
+                        case .authentified:
+                            LoadedCalendarView(courseCache: CourseCache())
+                        case .loading:
+                            VStack {
+                                Text("Logging in...")
+                                ProgressView().progressViewStyle(CircularProgressViewStyle(tint: .orange))
+                            }
+                        default:
+                            CalendarLoginView(zeusAuthModel: zeusAuthModel)
                         }
-                    default:
-                        CalendarLoginView(zeusAuthModel: zeusAuthModel)
                     }
                 }
                 .transition(.opacity)
