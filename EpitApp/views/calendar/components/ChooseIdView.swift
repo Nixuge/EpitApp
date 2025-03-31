@@ -21,6 +21,8 @@ struct ChooseIdView: View {
             FancyTextInput(text: $searchText, placeholder: "Search", color: .orange)
                 .padding(5)
             
+            Spacer()
+            
             switch selectedIdCache.loadingState {
             case .def:
                 Text("Error: Not processing?")
@@ -41,6 +43,8 @@ struct ChooseIdView: View {
                     selectedIdCache.getIdList()
                 }
             }
+            
+            Spacer()
         }
     }
 }
@@ -54,27 +58,94 @@ struct ListIdChooseView: View {
     let items: [HierarchyNode]
     
     var body: some View {
-        List(items, children: \.children) { row in
-            if (row.children == nil) {
-                ZStack {
-                    Rectangle()
-                        .fill(Color.clear)  // Make the rectangle invisible
-                        .contentShape(Rectangle())  // Define the tappable area
-                        .onTapGesture {
-                            print("Tapped on \(row.name) (id \(row.id))")
-                            SelectedIdCache.shared.id = row.id.description
+        ScrollView {
+            LazyVStack {
+                ForEach(items) { row in
+                    if (row.children == nil) {
+                        Divider()
+                        ZStack {
+                            Rectangle()
+                                .fill(Color.clear)
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    print("Tapped on \(row.name) (id \(row.id))")
+                                    SelectedIdCache.shared.id = row.id.description
+                                }
+                            
+                            Text(row.name)
+                                .frame(maxWidth: .infinity, alignment: .leading)
                         }
+                        
+                    } else {
+                        Divider()
+                        IndividualView(title: row.name, items: row.children!, leftRect: true)
+                    }
                     
-                    Text(row.name)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-
-
                 }
-                .frame( alignment: .leading)
-            } else {
-                Text(row.name)
+
+            }
+            .padding(.leading, 15)
+            .padding(.trailing, 15)
+            .padding(.bottom, 15)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background {
+                RoundedRectangle(cornerSize: CGSize(width: 10, height: 10))
+                    .foregroundStyle(.gray.opacity(0.2))
             }
         }
-        .animation(.none)
+    }
+}
+struct IndividualView: View {
+    let title: String
+    let items: [HierarchyNode]
+    let leftRect: Bool
+
+    @State var isExpanded: Bool = true
+
+    var body: some View {
+        DisclosureGroup(
+            isExpanded: $isExpanded,
+            content: {
+                HStack(spacing: 0) {
+                    if leftRect {
+                        Rectangle()
+                            .fill(Color.clear)
+                            .frame(width: 15, height: .infinity)
+                    }
+                    LazyVStack {
+                        ForEach(items) { row in
+                            if row.children == nil {
+                                Divider()
+                                ZStack {
+                                    Rectangle()
+                                        .fill(Color.clear)
+                                        .contentShape(Rectangle())
+                                        .onTapGesture {
+                                            print("Tapped on \(row.name) (id \(row.id))")
+                                            SelectedIdCache.shared.id = row.id.description
+                                        }
+
+                                    Text(row.name)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .onTapGesture {
+                                            print("Tapped on \(row.name) (id \(row.id))")
+                                            SelectedIdCache.shared.id = row.id.description
+                                        }
+                                }
+                            } else {
+                                Divider()
+                                IndividualView(title: row.name, items: row.children!, leftRect: true)
+                            }
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                }
+            },
+            label: {
+                Text(title)
+                    .padding(.bottom, 5) // For some reason too low
+                    .font(.headline)
+            }
+        )
     }
 }
