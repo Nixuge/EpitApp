@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct PegasusUEView: View {
+    @Environment(\.colorScheme) var colorScheme
+
     var ue: PegasusUE
 
     var body: some View {
@@ -33,7 +35,7 @@ struct PegasusUEView: View {
                         }
                         .padding(5)
                         .font(.headline)
-                        .foregroundStyle(.black)
+                        .foregroundStyle(colorScheme == .dark ? .black : .white)
 //
 //                        UnevenRoundedRectangle(topLeadingRadius: 20, bottomLeadingRadius: 20, bottomTrailingRadius: 20, topTrailingRadius: 20)
 //                            .frame(maxWidth: .infinity, minHeight: 4, maxHeight: 4, alignment: .leading)

@@ -82,6 +82,7 @@ struct LoadedCalendarView: View {
             FancySheetButton(
                 label: { Label("Lightning", systemImage: "tag.fill").labelStyle(.iconOnly) },
                 color: .gray.opacity(0.15),
+                textColor: colorScheme == .dark ? .white : .gray,
                 isPresented: $showClassPicker,
                 action: {
                     showClassPicker = true
