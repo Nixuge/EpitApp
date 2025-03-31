@@ -198,7 +198,7 @@ class CourseCache: ObservableObject {
             return
         }
         
-        guard let classId = SelectedIdCache.shared.id else {
+        guard let classId = SelectedIdCache.shared.idString else {
             print("Class id is null")
             return
         }

@@ -74,14 +74,18 @@ class SelectedIdCache: ObservableObject {
     @Published var loadingState: SelectedIdCacheLoadingState = .def
     
     @Published var allIds: [HierarchyNode]?
-    @Published var id : String? {
+    @Published var id : Int? {
         didSet {
             UserDefaults.standard.set(id, forKey: "selectedIdCache.id")
         }
     }
     
+    var idString: String? {
+        self.id?.description
+    }
+    
     init() {
-       id = UserDefaults.standard.string(forKey: "selectedIdCache.id")
+       id = UserDefaults.standard.integer(forKey: "selectedIdCache.id")
     }
     
     func getIdList(completion: @escaping (Bool) -> Void = {_ in }) {

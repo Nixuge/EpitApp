@@ -64,7 +64,7 @@ struct ChooseIdView: View {
 
 func onButtonClick(row: HierarchyNode, isPresented: Binding<Bool>) {
     print("Tapped on \(row.name) (id \(row.id))")
-    SelectedIdCache.shared.id = row.id.description
+    SelectedIdCache.shared.id = row.id
     isPresented.wrappedValue = false
     CourseCache.shared.clearAllCourses()
     Task {
@@ -104,7 +104,7 @@ struct ListIdChooseView: View {
                         if (row.name != "EPITA") {
                             Divider()
                         }
-                        IndividualView(title: row.name, items: row.children!, isViewPresented: $isPresented)
+                        IndividualView(row: row, items: row.children!, isViewPresented: $isPresented)
                     }
                     
                 }
@@ -122,7 +122,7 @@ struct ListIdChooseView: View {
     }
 }
 struct IndividualView: View {
-    let title: String
+    let row: HierarchyNode
     let items: [HierarchyNode]
 
     @Binding var isViewPresented: Bool
@@ -149,16 +149,25 @@ struct IndividualView: View {
                                         .onTapGesture {
                                             onButtonClick(row: row, isPresented: $isViewPresented)
                                         }
-
-                                    Text(row.name)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                        .onTapGesture {
-                                            onButtonClick(row: row, isPresented: $isViewPresented)
+                                    
+                                    HStack {
+                                        Text(row.name)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .onTapGesture {
+                                                onButtonClick(row: row, isPresented: $isViewPresented)
+                                            }
+                                        
+                                        if (row.id == SelectedIdCache.shared.id) {
+                                            Spacer()
+                                            Label("", systemImage: "checkmark")
+                                                .foregroundStyle(.tint)
                                         }
+                                    }
+
                                 }
                             } else {
                                 Divider()
-                                IndividualView(title: row.name, items: row.children!, isViewPresented: $isViewPresented)
+                                IndividualView(row: row, items: row.children!, isViewPresented: $isViewPresented)
                             }
                         }
                     }
@@ -166,9 +175,12 @@ struct IndividualView: View {
                 }
             },
             label: {
-                Text(title)
-                    .padding(.bottom, 5)
-                    .font(.headline)
+                HStack {
+                    Text(row.name)
+                        .padding(.bottom, 5)
+                        .font(.headline)
+                }
+
             }
         )
     }
