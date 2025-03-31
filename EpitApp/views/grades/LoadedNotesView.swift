@@ -11,7 +11,6 @@ struct LoadedNotesView: View {
     @ObservedObject var pegasusParser: PegasusParser
 
     @State private var selectedSemester = 0
-    @State private var currentView: PegasusProgressState?
 
     init(pegasusAuthModel: PegasusAuthModel, pegasusParser: PegasusParser) {
         self.pegasusAuthModel = pegasusAuthModel
@@ -20,52 +19,37 @@ struct LoadedNotesView: View {
 
     var body: some View {
         VStack {
-            if let view = currentView {
-                Group {
-                    switch view {
-                    case .fetching:
-                        VStack {
-                            Text("Fetching content...")
-                            ProgressView().progressViewStyle(CircularProgressViewStyle(tint: .pegasusTextColor))
-                        }
-                    case .parsing:
-                        VStack {
-                            Text("Parsing content...")
-                            ProgressView().progressViewStyle(CircularProgressViewStyle(tint: .pegasusTextColor))
-                        }
-                    case .errorFetching:
-                        Text("Error fetching content.")
-                    case .errorParsing:
-                        Text("Error parsing content.")
-                    case .done:
-                        VStack {
-                            PegasusHeader(pegasusParser: pegasusParser, selectedSemester: $selectedSemester)
-                                .padding()
+            switch pegasusParser.progressState {
+            case .fetching:
+                VStack {
+                    Text("Fetching content...")
+                    ProgressView()
+                }
+            case .parsing:
+                VStack {
+                    Text("Parsing content...")
+                    ProgressView()
+                }
+            case .errorFetching:
+                Text("Error fetching content.")
+            case .errorParsing:
+                Text("Error parsing content.")
+            case .done:
+                VStack {
+                    PegasusHeader(pegasusParser: pegasusParser, selectedSemester: $selectedSemester)
+                        .padding()
 
-                            TabView(selection: $selectedSemester) {
-                                ForEach(pegasusParser.data!.semesters.indices, id: \.self) { index in
-                                    PegasusSemesterView(pegasusParser: pegasusParser, semester: pegasusParser.data!.semesters[index])
-                                        .tag(index)
-                                }
-                            }
-                            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+                    TabView(selection: $selectedSemester) {
+                        ForEach(pegasusParser.data!.semesters.indices, id: \.self) { index in
+                            PegasusSemesterView(pegasusParser: pegasusParser, semester: pegasusParser.data!.semesters[index])
+                                .tag(index)
                         }
                     }
+                    .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                 }
-                .transition(.opacity)
             }
-        }
-        .onAppear {
-            updateView(pegasusParser.progressState)
-        }
-        .onChange(of: pegasusParser.progressState) { newState in
-            updateView(newState)
-        }
-    }
 
-    private func updateView(_ state: PegasusProgressState) {
-        withAnimation(.easeInOut(duration: 0.3)) {
-            currentView = state
         }
+        .animation(.easeInOut, value: pegasusParser.progressState)
     }
 }

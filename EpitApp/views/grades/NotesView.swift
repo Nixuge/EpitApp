@@ -23,8 +23,6 @@ struct NotesView: View {
                 PegasusLoginView(pegasusAuthModel: pegasusAuthModel)
             }
         }
-
+        .animation(.easeInOut, value: pegasusAuthModel.authState)
     }
-    
- 
 }
