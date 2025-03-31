@@ -24,11 +24,15 @@ struct CourseRange : Identifiable {
 }
 
 struct LoadedCalendarView: View {
+    @Environment(\.colorScheme) var colorScheme
+
     @ObservedObject var zeusAuthModel = ZeusAuthModel.shared
-    @ObservedObject var courseCache: CourseCache
+    @ObservedObject var courseCache = CourseCache.shared
     @State private var selectedDate = Date()
     @State private var showDatePicker = false
     @State private var displayedDates: [Date] = []
+    
+    @State private var showClassPicker = false
 
     
     private let preloadedTabAmount = 14
@@ -39,38 +43,72 @@ struct LoadedCalendarView: View {
     
 
     var body: some View {
-        VStack {
-            LoadedCalendarHeader(selectedDate: $selectedDate, showDatePicker: $showDatePicker)
-                .padding()
-                .task(id: selectedDate) {
-                    await courseCache.loadCourses(date: selectedDate)
+        ZStack {
+            VStack {
+                LoadedCalendarHeader(selectedDate: $selectedDate, showDatePicker: $showDatePicker)
+                    .padding()
+                    .task(id: selectedDate) {
+                        await courseCache.loadCourses(date: selectedDate)
+                    }
+                
+                TabView(selection: $selectedDate) {
+                    ForEach(displayedDates, id: \.self) { date in
+                        content(for: date).tag(date)
+                    }
                 }
+                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+                .onChange(of: selectedDate) { newDate in
+                    // First two checks: check if currently at a border (when just swiping)
+                    // Second two checks: check if jumped (eg using calendar)
+                    // This is made because refreshing the displayedDates makes the screen flicker a bit.
+                    // TODO: Make it refresh on sundays where theres a lot less classes.
+                    if (displayedDates.last!.FNT == selectedDate.FNT || displayedDates.first!.FNT == selectedDate.FNT ||
+                        displayedDates.first! > selectedDate || displayedDates.last! < selectedDate) {
+                        print("Old bounds: \(displayedDates.first!.FNT) -> \(displayedDates.last!.FNT)")
+                        updateDisplayedDates(for: selectedDate)
+                        print("New bounds: \(displayedDates.first!.FNT) -> \(displayedDates.last!.FNT)")
+                    }
+                }
+                .onAppear() {
+                    updateDisplayedDates(for: selectedDate, delayMS: 0)
+                }
+                //            Text("Valid token found and checked (len of \(zeusAuthModel.token!.count)). Token start: '\(zeusAuthModel.token!.prefix(30))'.")
+            }.refreshable {
+              await refresh()
+            }
             
-            TabView(selection: $selectedDate) {
-                ForEach(displayedDates, id: \.self) { date in
-                    content(for: date).tag(date)
-                }
-            }
-            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-            .onChange(of: selectedDate) { newDate in
-                // First two checks: check if currently at a border (when just swiping)
-                // Second two checks: check if jumped (eg using calendar)
-                // This is made because refreshing the displayedDates makes the screen flicker a bit.
-                // TODO: Make it refresh on sundays where theres a lot less classes.
-                if (displayedDates.last!.FNT == selectedDate.FNT || displayedDates.first!.FNT == selectedDate.FNT ||
-                    displayedDates.first! > selectedDate || displayedDates.last! < selectedDate) {
-                    print("Old bounds: \(displayedDates.first!.FNT) -> \(displayedDates.last!.FNT)")
-                    updateDisplayedDates(for: selectedDate)
-                    print("New bounds: \(displayedDates.first!.FNT) -> \(displayedDates.last!.FNT)")
-                }
-            }
-            .onAppear() {
-                updateDisplayedDates(for: selectedDate, delayMS: 0)
-            }
-            //            Text("Valid token found and checked (len of \(zeusAuthModel.token!.count)). Token start: '\(zeusAuthModel.token!.prefix(30))'.")
-        }.refreshable {
-          await refresh()
+            
+            
+            FancySheetButton(
+                label: { Label("Lightning", systemImage: "tag.fill").labelStyle(.iconOnly) },
+                color: .gray.opacity(0.15),
+                isPresented: $showClassPicker,
+                action: {
+                    showClassPicker = true
+                },
+                sheetContent: {
+                    ChooseIdView(isPresented: $showClassPicker)
+                        .ignoresSafeArea(.all)
+                        .background(
+                            ZStack {
+                                // Note: unsure if looks best #000 black or not
+                                // Background color
+                                if (colorScheme == .dark) {
+                                    Color.black.edgesIgnoringSafeArea(.all)
+                                }
+                                // Border (offset down otherwise not looking good)
+                                GeometryReader { geometry in
+                                    RoundedRectangle(cornerRadius: 10)
+                                        .stroke(.white.opacity(0.15), lineWidth: 2)
+                                        .frame(height: geometry.size.height + 100)
+                                }
+                            }
+                        )
+                })
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+            .padding(5)
         }
+        
     }
 
     private func refresh() async {
@@ -87,7 +125,7 @@ struct LoadedCalendarView: View {
                 VStack {
                     Spacer()
                     Text("Loading content for " + date.formatted(.dateTime.year().month().day()))
-                    ProgressView().progressViewStyle(CircularProgressViewStyle(tint: .orange))
+                    ProgressView()
                     Spacer()
                 }
             } else {
@@ -113,7 +151,7 @@ struct LoadedCalendarView: View {
                 }
             }
         }
-        
+        .animation(.easeInOut, value: courseCache.courses.keys.contains(date.FNT))
     }
     
     // Note: The delay helps avoid the weird rolback thing when going too fast. Still not perfect tho.

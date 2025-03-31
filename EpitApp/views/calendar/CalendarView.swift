@@ -17,10 +17,9 @@ struct CalendarView: View {
             switch zeusAuthModel.authState {
             case .authentified:
                 if (selectedIdCache.id == nil) {
-                    ChooseIdView()
-                        .onAppear { SelectedIdCache.shared.getIdList()}
+                    ChooseIdView(isPresented: .constant(true))
                 } else {
-                    LoadedCalendarView(courseCache: CourseCache())
+                    LoadedCalendarView()
                 }
             case .loading:
                 VStack {

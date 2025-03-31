@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct FancySheetButton<Content: View>: View {
-    var text: String
+struct FancySheetButton<Content: View, LabelContent: View>: View {
+    var label: () -> LabelContent
     var color: Color = .orange
     var textColor: Color = .white
     var isDisabled: Bool = false
@@ -21,7 +21,7 @@ struct FancySheetButton<Content: View>: View {
     
     var body: some View {
         Button(action: action) {
-            Text(text)
+            label()
                 .font(.headline)
                 .padding()
                 .background(color)

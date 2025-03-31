@@ -9,6 +9,8 @@ import SwiftUI
 import Combine
 
 class CourseCache: ObservableObject {
+    static let shared = CourseCache()
+
     @ObservedObject var zeusAuthModel = ZeusAuthModel.shared
     
     // About dates:
@@ -22,6 +24,8 @@ class CourseCache: ObservableObject {
     
     // Note: Unsure if optimized.
     @Published var courses: [String: (TimeInterval, [CourseRange])] = [:]
+    
+    var lastRequestedDate: Date? = nil
     
     
     func buildCourseDictionary(from inputCourses: [Course], startDate: Date, endDate: Date) -> [String: [Course]] {
@@ -156,6 +160,9 @@ class CourseCache: ObservableObject {
 
     func loadCourses(date: Date) async {
         print("Called !")
+        
+        lastRequestedDate = date
+        
         if (self.courses[date.FNT] != nil) {
             // todo: CHECK FOR VALIDITY WITH TIMEINTERVAL
             print("Already valid.")
@@ -248,5 +255,13 @@ class CourseCache: ObservableObject {
         }
         print("Ok yes")
         dataTask.resume()
+    }
+    
+    func reRequestLastSavedDateOtherwiseDoNothing() async {
+        guard let date = lastRequestedDate else {
+            print("No previous date.")
+            return
+        }
+        await loadCourses(date: date)
     }
 }

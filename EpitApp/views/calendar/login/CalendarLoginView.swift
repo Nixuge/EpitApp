@@ -50,7 +50,7 @@ struct CalendarLoginView: View {
             
             VStack {
                 FancySheetButton(
-                    text: "Login using in-app browser",
+                    label: { Text("Login using in-app browser") },
                     isPresented: $showWebView,
                     action: {
                         DispatchQueue.main.async {

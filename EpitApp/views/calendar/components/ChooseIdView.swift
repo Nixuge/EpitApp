@@ -12,25 +12,36 @@ struct ChooseIdView: View {
     @State var searchText = ""
     @State var backupIdText = ""
     
+    @Binding var isPresented: Bool
+    
     @State var currentSearchResult: [HierarchyNode] = []
     
     @ObservedObject var selectedIdCache = SelectedIdCache.shared
     
     var body: some View {
         VStack {
-            FancyTextInput(text: $searchText, placeholder: "Search", color: .orange)
-                .padding(5)
+            TextField(
+                "Search",
+                text: $searchText
+            )
+            .padding(.trailing, 15)
+            .padding(.leading, 15)
+            .padding(.top, 15)
+            .font(.title)
+            
+            Divider()
+            
             
             Spacer()
             
             switch selectedIdCache.loadingState {
             case .def:
-                Text("Error: Not processing?")
+                Text("Checking login...")
             case .loading:
                 Text("Loading hierarchy...")
                 ProgressView()
             case .done:
-                ListIdChooseView(items: currentSearchResult)
+                ListIdChooseView(items: currentSearchResult, isPresented: $isPresented)
                     .onAppear() {
                         currentSearchResult = selectedIdCache.searchForName(searchText, in: selectedIdCache.allIds!)
                     }
@@ -46,39 +57,54 @@ struct ChooseIdView: View {
             
             Spacer()
         }
+        .onAppear { SelectedIdCache.shared.getIdList()}
     }
 }
 
 
+func onButtonClick(row: HierarchyNode, isPresented: Binding<Bool>) {
+    print("Tapped on \(row.name) (id \(row.id))")
+    SelectedIdCache.shared.id = row.id.description
+    isPresented.wrappedValue = false
+    CourseCache.shared.clearAllCourses()
+    Task {
+        await CourseCache.shared.reRequestLastSavedDateOtherwiseDoNothing()
+    }
+    
+}
 
 
-import SwiftUI
 
 struct ListIdChooseView: View {
     let items: [HierarchyNode]
+    @Binding var isPresented: Bool
     
     var body: some View {
         ScrollView {
             LazyVStack {
                 ForEach(items) { row in
                     if (row.children == nil) {
-                        Divider()
                         ZStack {
                             Rectangle()
                                 .fill(Color.clear)
                                 .contentShape(Rectangle())
                                 .onTapGesture {
-                                    print("Tapped on \(row.name) (id \(row.id))")
-                                    SelectedIdCache.shared.id = row.id.description
+                                    onButtonClick(row: row, isPresented: $isPresented)
                                 }
                             
                             Text(row.name)
                                 .frame(maxWidth: .infinity, alignment: .leading)
+                                .onTapGesture {
+                                    onButtonClick(row: row, isPresented: $isPresented)
+                                }
                         }
                         
                     } else {
-                        Divider()
-                        IndividualView(title: row.name, items: row.children!, leftRect: true)
+                        // DIRTY FIX - no divider at the top.
+                        if (row.name != "EPITA") {
+                            Divider()
+                        }
+                        IndividualView(title: row.name, items: row.children!, isViewPresented: $isPresented)
                     }
                     
                 }
@@ -89,8 +115,8 @@ struct ListIdChooseView: View {
             .padding(.bottom, 15)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background {
-                RoundedRectangle(cornerSize: CGSize(width: 10, height: 10))
-                    .foregroundStyle(.gray.opacity(0.2))
+//                RoundedRectangle(cornerSize: CGSize(width: 10, height: 10))
+//                    .foregroundStyle(.gray.opacity(0.2))
             }
         }
     }
@@ -98,7 +124,8 @@ struct ListIdChooseView: View {
 struct IndividualView: View {
     let title: String
     let items: [HierarchyNode]
-    let leftRect: Bool
+
+    @Binding var isViewPresented: Bool
 
     @State var isExpanded: Bool = true
 
@@ -107,11 +134,10 @@ struct IndividualView: View {
             isExpanded: $isExpanded,
             content: {
                 HStack(spacing: 0) {
-                    if leftRect {
-                        Rectangle()
-                            .fill(Color.clear)
-                            .frame(width: 15, height: .infinity)
-                    }
+                    Rectangle()
+                        .fill(Color.clear)
+                        .frame(width: 15, height: .infinity)
+                
                     LazyVStack {
                         ForEach(items) { row in
                             if row.children == nil {
@@ -121,20 +147,18 @@ struct IndividualView: View {
                                         .fill(Color.clear)
                                         .contentShape(Rectangle())
                                         .onTapGesture {
-                                            print("Tapped on \(row.name) (id \(row.id))")
-                                            SelectedIdCache.shared.id = row.id.description
+                                            onButtonClick(row: row, isPresented: $isViewPresented)
                                         }
 
                                     Text(row.name)
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                         .onTapGesture {
-                                            print("Tapped on \(row.name) (id \(row.id))")
-                                            SelectedIdCache.shared.id = row.id.description
+                                            onButtonClick(row: row, isPresented: $isViewPresented)
                                         }
                                 }
                             } else {
                                 Divider()
-                                IndividualView(title: row.name, items: row.children!, leftRect: true)
+                                IndividualView(title: row.name, items: row.children!, isViewPresented: $isViewPresented)
                             }
                         }
                     }
@@ -143,7 +167,7 @@ struct IndividualView: View {
             },
             label: {
                 Text(title)
-                    .padding(.bottom, 5) // For some reason too low
+                    .padding(.bottom, 5)
                     .font(.headline)
             }
         )

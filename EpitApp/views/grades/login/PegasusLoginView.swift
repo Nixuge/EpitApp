@@ -16,7 +16,7 @@ struct PegasusLoginView: View {
     var body: some View {
         VStack {
             FancySheetButton(
-                text: "Login using in-app browser",
+                label: { Text("Login using in-app browser") },
                 color: .pegasusBackgroundColor,
                 isPresented: $showWebView,
                 action: {

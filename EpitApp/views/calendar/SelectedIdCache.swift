@@ -144,17 +144,17 @@ class SelectedIdCache: ObservableObject {
     // ids parameter for recursion
     func searchForName(_ name: String, in ids: [HierarchyNode]) -> [HierarchyNode] {
         let name = name.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
-        print("Called \(#function) with \(ids.count)")
+//        print("Called \(#function) with \(ids.count)")
         
         if (name.isEmpty) {
-            print("Name is empty, returning all !")
+//            print("Name is empty, returning all !")
             return ids
         }
         
         var shownChilds = [HierarchyNode]()
         for id in ids {
             if let childs = id.children {
-                print("Looking recursive inside \(id.name)")
+//                print("Looking recursive inside \(id.name)")
                 let foundsChilds = searchForName(name, in: childs)
                 if (!foundsChilds.isEmpty) {
                     shownChilds.append(id.cloneChangeChildren(newChildren: foundsChilds))
@@ -167,7 +167,7 @@ class SelectedIdCache: ObservableObject {
         
         }
         
-        print("DONE: \(shownChilds)")
+//        print("DONE: \(shownChilds)")
         
         return shownChilds
     }
