@@ -114,6 +114,7 @@ struct LoadedCalendarView: View {
 
     private func refresh() async {
         courseCache.clearAllCourses()
+        CourseDetailsCache.shared.clearAll()
 //        try? await Task.sleep(nanoseconds: 1_000_000_000)
         await courseCache.loadCourses(date: selectedDate)
     }

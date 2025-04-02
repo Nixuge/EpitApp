@@ -56,9 +56,9 @@ struct CourseGroup: Decodable {
     let id: Int
 //    let idParent: Int //always null?
     let name: String
-//    let path: String //always null?
+//    let path: String //not null in details
     let count: Int?
-//    let isReadOnly: Bool //always null?
+//    let isReadOnly: Bool //not null in details
     let idSchool: Int
     let color: Color
     let isVisible: Bool
@@ -89,7 +89,7 @@ struct Teacher: Decodable {
     let name: String
     let firstname: String
 //    "mail": null,
-//    "isInternal": null,
+//    "isInternal": null / bool,
 //    "isPhd": null,
 //    "phone": null,
 //    "typeId": null,

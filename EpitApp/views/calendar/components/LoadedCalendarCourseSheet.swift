@@ -12,6 +12,8 @@ import SwiftUI
 struct LoadedCalendarCourseSheet: View {
     @Environment(\.colorScheme) var colorScheme
     
+    @ObservedObject var courseDetailsCache = CourseDetailsCache.shared
+    
     let range: CourseRange
     let borderColor: Color
     
@@ -67,11 +69,31 @@ struct LoadedCalendarCourseSheet: View {
                             .multilineTextAlignment(.leading)
                     }
                     
-                    // Unimplemented - needs another request.
-                    Text("Comments:")
-                        .padding(.top, 10)
-                    Text("TODO")
-                        .multilineTextAlignment(.leading)
+                    
+                    switch courseDetailsCache.details[course.idReservation] {
+                    case .loading:
+                        Text("Loading comments...")
+                            .padding(.top, 10)
+                            .foregroundStyle(.gray)
+                    case .failed(let error):
+                        Text("Loading comments...")
+                            .padding(.top, 10)
+                        Text("Error loading: \(error)")
+                    case .loaded(let details):
+                        if (details.comment.isEmpty) {
+                            Text("No comment")
+                                .padding(.top, 10)
+                                .foregroundStyle(.gray)
+                        } else {
+                            Text("Comment:")
+                                .padding(.top, 10)
+                            Text(details.comment)
+                        }
+                        
+                    default:
+                        Text("Getting ready to load comments...")
+                            .padding(.top, 10)
+                    }
                     
                     
                 }
@@ -88,6 +110,13 @@ struct LoadedCalendarCourseSheet: View {
                 }
             }
             Spacer()
+        }
+        .onAppear {
+            for course in range.courses {
+                Task {
+                    await courseDetailsCache.loadDetailsCache(idReservation: course.idReservation)
+                }
+            }
         }
         .padding(EdgeInsets(top: 30, leading: 10, bottom: 80, trailing: 10))
         .frame(maxWidth: .infinity, maxHeight: .infinity)

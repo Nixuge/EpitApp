@@ -18,6 +18,9 @@ struct ChooseIdView: View {
     
     @ObservedObject var selectedIdCache = SelectedIdCache.shared
     
+    @FocusState private var searchFocus: Bool
+
+    
     var body: some View {
         VStack {
             TextField(
@@ -28,6 +31,10 @@ struct ChooseIdView: View {
             .padding(.leading, 15)
             .padding(.top, 15)
             .font(.title)
+            .focused($searchFocus)
+            .onAppear {
+                searchFocus = true
+            }
             
             Divider()
             
@@ -57,7 +64,9 @@ struct ChooseIdView: View {
             
             Spacer()
         }
-        .onAppear { SelectedIdCache.shared.getIdList()}
+        .onAppear {
+            SelectedIdCache.shared.getIdList()
+        }
     }
 }
 
@@ -180,7 +189,6 @@ struct IndividualView: View {
                         .padding(.bottom, 5)
                         .font(.headline)
                 }
-
             }
         )
     }

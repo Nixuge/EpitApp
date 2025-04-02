@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HierarchyNode: Decodable, Identifiable {
     let name: String
+    let searchName: String
     let id: Int
     let id_school: Int
     let count: Int
@@ -29,6 +30,7 @@ struct HierarchyNode: Decodable, Identifiable {
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.name = try container.decode(String.self, forKey: .name)
+        self.searchName = self.name.lowercased().replacingOccurrences(of: " ", with: "")
         self.id = try container.decode(Int.self, forKey: .id)
         self.id_school = try container.decode(Int.self, forKey: .id_school)
         self.count = try container.decode(Int.self, forKey: .count)
@@ -43,6 +45,7 @@ struct HierarchyNode: Decodable, Identifiable {
     
     init(name: String, id: Int, id_school: Int, count: Int, id_parent: Int?, children: [HierarchyNode]?) {
         self.name = name
+        self.searchName = self.name.lowercased().replacingOccurrences(of: " ", with: "")
         self.id = id
         self.id_school = id_school
         self.count = count
@@ -147,7 +150,7 @@ class SelectedIdCache: ObservableObject {
     
     // ids parameter for recursion
     func searchForName(_ name: String, in ids: [HierarchyNode]) -> [HierarchyNode] {
-        let name = name.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+        let name = name.lowercased().replacingOccurrences(of: " ", with: "")
 //        print("Called \(#function) with \(ids.count)")
         
         if (name.isEmpty) {
@@ -164,7 +167,7 @@ class SelectedIdCache: ObservableObject {
                     shownChilds.append(id.cloneChangeChildren(newChildren: foundsChilds))
                 }
             } else {
-                if (id.name.lowercased().contains(name)) {
+                if (id.searchName.contains(name)) {
                     shownChilds.append(id)
                 }
             }
