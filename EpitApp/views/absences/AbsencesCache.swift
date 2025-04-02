@@ -46,6 +46,46 @@ struct AbsencesPeriod: Decodable, Identifiable {
     let endDate: String
     let absences: [Absence]
 //    let exclusions: [Exclusion] // No data example to get that :/
+    
+    let isCurrentPeriod: Bool
+    enum CodingKeys: CodingKey {
+        case id
+        case points
+        case grade
+        case beginDate
+        case endDate
+        case absences
+    }
+    
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.id = try container.decode(Int.self, forKey: .id)
+        self.points = try container.decode(Int.self, forKey: .points)
+        self.grade = try container.decode(Int.self, forKey: .grade)
+        self.beginDate = try container.decode(String.self, forKey: .beginDate)
+        self.endDate = try container.decode(String.self, forKey: .endDate)
+        self.absences = try container.decode([Absence].self, forKey: .absences)
+        
+        // Not really need to put the date in the struct as not used anywhere else.
+        let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy-MM-dd"
+            dateFormatter.timeZone = TimeZone.current // Unsure as if should use GMT or current like rn.
+
+        // Parse the date strings into Date objects
+        guard let startDate = dateFormatter.date(from: self.beginDate),
+              let endDate = dateFormatter.date(from: self.endDate) else {
+            print("ERROR INTIALIZING ISCURRENTPERIOD DATE.")
+            self.isCurrentPeriod = false
+            return
+        }
+        
+        let currentDate = Date()
+        let calendar = Calendar.current
+        let startOfStartDate = calendar.startOfDay(for: startDate)
+        let endOfEndDate = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: endDate)!
+
+        self.isCurrentPeriod = currentDate >= startOfStartDate && currentDate <= endOfEndDate
+    }
 }
 
 struct AbsencesSemester: Decodable {
@@ -54,7 +94,7 @@ struct AbsencesSemester: Decodable {
     let semesterId: Int
     let levelName: String
     let promo: Int
-    let periods: [AbsencesPeriod]
+    var periods: [AbsencesPeriod]
 }
 
 enum AbsencesCacheState {
@@ -82,9 +122,9 @@ class AbsencesCache: ObservableObject {
     }
     
     func setState(_ newState: AbsencesCacheState) {
-//        DispatchQueue.main.async {
+        DispatchQueue.main.async {
             self.state = newState
-//        }
+        }
     }
     
     func grabNewContent(completion: @escaping (Bool) -> Void = { _ in }, force: Bool = false) {
@@ -133,7 +173,7 @@ class AbsencesCache: ObservableObject {
                 return
             }
             
-            let semesters: [AbsencesSemester]
+            var semesters: [AbsencesSemester]
             do {
                 semesters = try JSONDecoder().decode([AbsencesSemester].self, from: data)
             } catch {
@@ -144,10 +184,20 @@ class AbsencesCache: ObservableObject {
             }
             
             print("Done grabbing content.")
-//            print(semesters)
-            self.content = semesters
-            self.setState(.loaded)
-            completion(true)
+            
+            // Get the most recent period at the top.
+            // Note: Could use a sort for reddundance, but rn a reverse works just fine
+            // (by default the website sends first->last, we reverse last->first)
+            for i in 0..<semesters.count {
+                semesters[i].periods.reverse()
+//                semesters[i].periods.sort { $0.beginDate > $1.beginDate }
+            }
+                        
+            DispatchQueue.main.async {
+                self.content = semesters
+                self.setState(.loaded)
+                completion(true)
+            }
         }
         dataTask.resume()
     }

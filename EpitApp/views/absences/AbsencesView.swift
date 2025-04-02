@@ -13,7 +13,15 @@ struct AbsencesView: View {
 
     var body: some View {
         VStack {
-            if (authModel.authState == .authentified) {
+            if (absencesCache.state == .loading) {
+                VStack {
+                    Text("Loading data...")
+                    ProgressView()
+                }.onAppear {
+                    // Should only ever happen once
+                    absencesCache.onAppear()
+                }
+            } else if (authModel.authState == .authentified) {
                 AbsencesLoadedView()
                 // Why that:
                 // On initial launch, what the program does first is to.
@@ -24,14 +32,6 @@ struct AbsencesView: View {
                 VStack {
                     Text("Logging in...")
                     ProgressView()
-                }
-            } else if (absencesCache.state == .loading) {
-                VStack {
-                    Text("Loading data...")
-                    ProgressView()
-                }.onAppear {
-                    // Should only ever happen once
-                    absencesCache.onAppear()
                 }
             } else if (authModel.authState == .unauthenticated || authModel.authState == .failed) {
                 AbsencesLoginView()

@@ -30,16 +30,27 @@ struct AbsencesPeriodView: View {
                     
                 } header: {
                     HStack {
-                        Text("Période du \(period.beginDate.description) au \(period.endDate.description) (\(period.grade)/\(period.points))")
+                        Text("Du \(period.beginDate.description) au \(period.endDate.description) (\(period.grade)/\(period.points))")
                             .frame(alignment: .center)
+                            .padding(5)
+                        
                     }
                     .padding(5)
                     .font(.headline)
                     .foregroundStyle(.black)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
                     .background(
-                        RoundedRectangle(cornerSize: CGSize(width: 5, height: 5))
-                            .foregroundStyle(.green)
+                        ZStack {
+                            RoundedRectangle(cornerSize: CGSize(width: 5, height: 5))
+                                .foregroundStyle(.green)
+                                .padding(2)
+                            
+                            if (period.isCurrentPeriod) {
+                                RoundedRectangle(cornerSize: CGSize(width: 5, height: 5))
+                                    .stroke(.white, lineWidth: 2)
+                                    .padding(2)
+                            }
+                        }
                     )
                 }
             }
