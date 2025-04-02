@@ -23,49 +23,58 @@ struct LoadedCalendarCourse: View {
         let courseColor = (range.courses.count > 1) ? Color.orange : range.courses[0].groups[0].color //TODO: HAndle "better" color from website
         
         let name = (range.courses.count == 1) ? range.courses[0].name : range.courses[0].name + "...";
-        HStack {
-            VStack(alignment: .trailing) {
-                Text(minutesToTime(minutes: range.start))
-                    .multilineTextAlignment(.trailing)
-                    .frame(width: 50, alignment: .trailing)
-                
-                Spacer()
-                
-                Text(minutesToTime(minutes: range.end))
-                    .multilineTextAlignment(.trailing)
-                    .frame(width: 50, alignment: .trailing)
-            }
-
-            RoundedRectangle(cornerSize: CGSize(width: 20, height: 30)).frame(width: 5, height: CGFloat(height)).foregroundColor(courseColor)
-            
-            VStack(alignment: .leading) {
-                Text(name)
-                    .multilineTextAlignment(.leading)
-                    .frame(alignment: .topLeading)
-                
-                // TODO: Handle multi courses better for below.
-                if (range.courses.count > 1) {
-                    Text("Multiple classes at once").foregroundColor(.red)
-                } else {
-                    if (!range.courses[0].rooms.isEmpty) {
-                        let allRoomNames = range.courses.flatMap { $0.rooms }.map { $0.name }.joined(separator: ", ")
-                        Text(allRoomNames).foregroundColor(.gray)
-                    }
+        ZStack {
+            HStack {
+                VStack(alignment: .trailing) {
+                    Text(minutesToTime(minutes: range.start))
+                        .multilineTextAlignment(.trailing)
+                        .frame(width: 50, alignment: .trailing)
+                    
+                    Spacer()
+                    
+                    Text(minutesToTime(minutes: range.end))
+                        .multilineTextAlignment(.trailing)
+                        .frame(width: 50, alignment: .trailing)
                 }
-                
 
-                if (height > 50 && !range.courses[0].teachers.isEmpty) {
-                    let allTeacherNames = range.courses.flatMap { $0.teachers }.map { $0.name }.joined(separator: ", ")
-                    Text(allTeacherNames)
+                RoundedRectangle(cornerSize: CGSize(width: 20, height: 30)).frame(width: 5, height: CGFloat(height)).foregroundColor(courseColor)
+                
+                VStack(alignment: .leading) {
+                    Text(name)
                         .multilineTextAlignment(.leading)
                         .frame(alignment: .topLeading)
-                        .foregroundColor(.gray)
+                    
+                    // TODO: Handle multi courses better for below.
+                    if (range.courses.count > 1) {
+                        Text("Multiple classes at once").foregroundColor(.red)
+                    } else {
+                        if (!range.courses[0].rooms.isEmpty) {
+                            let allRoomNames = range.courses.flatMap { $0.rooms }.map { $0.name }.joined(separator: ", ")
+                            Text(allRoomNames).foregroundColor(.gray)
+                        }
+                    }
+                    
+
+                    if (height > 50 && !range.courses[0].teachers.isEmpty) {
+                        let allTeacherNames = range.courses.flatMap { $0.teachers }.map { $0.name }.joined(separator: ", ")
+                        Text(allTeacherNames)
+                            .multilineTextAlignment(.leading)
+                            .frame(alignment: .topLeading)
+                            .foregroundColor(.gray)
+                    }
+                    
+    //                Spacer()
+                    
                 }
-                
-//                Spacer()
-                
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            
+            // Dirty hack:
+            // Big rectangle on top of everything to check for taps.
+            // Problem is: when the rectangle is of color .clear, it doesn't register taps.
+            // The fix: make smth with an opacity of 0.001
+            Rectangle()
+                .foregroundStyle(.black.opacity(0.001))
         }.frame(height: CGFloat(height))
         // Note: rn this doesnt take all the width, only the width w text in it. Need to find how to make it full width.
         .onTapGesture {

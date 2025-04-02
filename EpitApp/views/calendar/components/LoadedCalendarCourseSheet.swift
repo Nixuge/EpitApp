@@ -70,30 +70,38 @@ struct LoadedCalendarCourseSheet: View {
                     }
                     
                     
-                    switch courseDetailsCache.details[course.idReservation] {
-                    case .loading:
-                        Text("Loading comments...")
-                            .padding(.top, 10)
-                            .foregroundStyle(.gray)
-                    case .failed(let error):
-                        Text("Loading comments...")
-                            .padding(.top, 10)
-                        Text("Error loading: \(error)")
-                    case .loaded(let details):
-                        if (details.comment.isEmpty) {
-                            Text("No comment")
+                    VStack {
+                        switch courseDetailsCache.details[course.idReservation] {
+                        case .loading:
+                            Text("Loading comments...")
                                 .padding(.top, 10)
                                 .foregroundStyle(.gray)
-                        } else {
-                            Text("Comment:")
+                        case .failed(let error):
+                            Text("Loading comments...")
                                 .padding(.top, 10)
-                            Text(details.comment)
+                            Text("Error loading: \(error)")
+                        case .loaded(let details):
+                            if (details.comment.isEmpty) {
+                                Text("No comment")
+                                    .padding(.top, 10)
+                                    .foregroundStyle(.gray)
+                            } else {
+                                Text("Comment:")
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(.top, 10)
+                                Text(details.comment)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                            }
+                            
+                        default:
+                            Text("Getting ready to load comments...")
+                                .padding(.top, 10)
+                                .foregroundStyle(.gray)
                         }
-                        
-                    default:
-                        Text("Getting ready to load comments...")
-                            .padding(.top, 10)
                     }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .animation(.easeInOut, value: courseDetailsCache.details[course.idReservation])
                     
                     
                 }
