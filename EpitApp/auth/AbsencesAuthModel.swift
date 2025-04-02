@@ -75,7 +75,7 @@ class AbsencesAuthModel: ObservableObject {
     
     func login(username: String, password: String) {
         if (authState == .loading) {
-            print("Already loading, returning...")
+            warn("Already loading, returning...")
             return
         }
         setValidity(newAuthState: .loading)
@@ -92,28 +92,28 @@ class AbsencesAuthModel: ObservableObject {
         let dataTask = session.dataTask(with: request as URLRequest) { (data, response, error) -> Void in
             guard let res = response as? HTTPURLResponse else {
                 self.setValidity(newAuthState: .failed)
-                print("Failed absences login at HTTPURLResponse step")
+                warn("Failed absences login at HTTPURLResponse step")
                 return
             }
             guard res.statusCode == 200 else {
                 self.setValidity(newAuthState: .failed)
-                print("Failed absences login at statuscode step: \(res.statusCode)")
+                warn("Failed absences login at statuscode step: \(res.statusCode)")
                 return
             }
             guard let data = data else {
                 self.setValidity(newAuthState: .failed)
-                print("Failed absences login at data unwrap step")
+                warn("Failed absences login at data unwrap step")
                 return
             }
             
             guard let authRes = try? JSONDecoder().decode(AuthResult.self, from: data) else {
                 self.setValidity(newAuthState: .failed)
-                print("Failed absences login at json decoding step")
+                warn("Failed absences login at json decoding step")
                 return
             }
         
-            print("Done logging in.")
-            print(authRes)
+            log("Done logging in.")
+            log(authRes)
             self.user = username
             self.password = password
             self.token = authRes.access_token

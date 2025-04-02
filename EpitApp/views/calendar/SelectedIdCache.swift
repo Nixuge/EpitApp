@@ -93,12 +93,12 @@ class SelectedIdCache: ObservableObject {
     
     func getIdList(completion: @escaping (Bool) -> Void = {_ in }) {
         if (loadingState == .loading || loadingState == .done) {
-            print("Already done/loading.")
+            warn("Already done/loading.")
             return
         }
         
         guard let token = zeusAuthModel.token else {
-            print("Token is nil.")
+            warn("Token is nil.")
             return
         }
         
@@ -110,21 +110,21 @@ class SelectedIdCache: ObservableObject {
             
         let dataTask = session.dataTask(with: request as URLRequest) { (data, response, error) -> Void in
             guard let res = response as? HTTPURLResponse else {
-                print("getIdList failed at HTTPURLResponse step")
+                warn("failed at HTTPURLResponse step")
                 self.loadingState = .failed
                 completion(false)
                 return
             }
 
             guard res.statusCode == 200 else {
-                print("getIdList failed at  statuscode step: \(res.statusCode)")
+                warn("failed at  statuscode step: \(res.statusCode)")
                 self.loadingState = .failed
                 completion(false)
                 return
             }
             
             guard let data = data else {
-                print("getIdList failed at data unwrap step")
+                warn("failed at data unwrap step")
                 self.loadingState = .failed
                 completion(false)
                 return
@@ -134,13 +134,13 @@ class SelectedIdCache: ObservableObject {
             do {
                 nodes = try JSONDecoder().decode([HierarchyNode].self, from: data)
             } catch {
-                print("getIdList failed at JSON decoding step: \(error)")
+                warn("failed at JSON decoding step: \(error)")
                 self.loadingState = .failed
                 completion(false)
                 return
             }
             
-            print("getIdList: success")
+            log("success")
             self.allIds = nodes
             self.loadingState = .done
             completion(true)
@@ -151,17 +151,16 @@ class SelectedIdCache: ObservableObject {
     // ids parameter for recursion
     func searchForName(_ name: String, in ids: [HierarchyNode]) -> [HierarchyNode] {
         let name = name.lowercased().replacingOccurrences(of: " ", with: "")
-//        print("Called \(#function) with \(ids.count)")
         
         if (name.isEmpty) {
-//            print("Name is empty, returning all !")
+//            debugLog("Name is empty, returning all !")
             return ids
         }
         
         var shownChilds = [HierarchyNode]()
         for id in ids {
             if let childs = id.children {
-//                print("Looking recursive inside \(id.name)")
+//                debugLog("Looking recursive inside \(id.name)")
                 let foundsChilds = searchForName(name, in: childs)
                 if (!foundsChilds.isEmpty) {
                     shownChilds.append(id.cloneChangeChildren(newChildren: foundsChilds))
@@ -174,7 +173,7 @@ class SelectedIdCache: ObservableObject {
         
         }
         
-//        print("DONE: \(shownChilds)")
+//        debugLog("DONE: \(shownChilds)")
         
         return shownChilds
     }

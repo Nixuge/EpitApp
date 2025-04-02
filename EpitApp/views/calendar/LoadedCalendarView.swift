@@ -64,9 +64,10 @@ struct LoadedCalendarView: View {
                     // TODO: Make it refresh on sundays where theres a lot less classes.
                     if (displayedDates.last!.FNT == selectedDate.FNT || displayedDates.first!.FNT == selectedDate.FNT ||
                         displayedDates.first! > selectedDate || displayedDates.last! < selectedDate) {
-                        print("Old bounds: \(displayedDates.first!.FNT) -> \(displayedDates.last!.FNT)")
+                        log("Refreshing tabview.")
+                        log("Old bounds: \(displayedDates.first!.FNT) -> \(displayedDates.last!.FNT)")
                         updateDisplayedDates(for: selectedDate)
-                        print("New bounds: \(displayedDates.first!.FNT) -> \(displayedDates.last!.FNT)")
+                        log("New bounds: \(displayedDates.first!.FNT) -> \(displayedDates.last!.FNT)")
                     }
                 }
                 .onAppear() {

@@ -29,10 +29,10 @@ class CourseCache: ObservableObject {
     
     
     func buildCourseDictionary(from inputCourses: [Course], startDate: Date, endDate: Date) -> [String: [Course]] {
-//        print("Start: " + startDate.FNT)
-//        print("End: " + endDate.FNT)
-//        print(startDate.formatted())
-//        print(endDate.formatted())
+//        debugLog("Start: " + startDate.FNT)
+//        debugLog("End: " + endDate.FNT)
+//        debugLog(startDate.formatted())
+//        debugLog(endDate.formatted())
 
         var coursesByDate: [String: [Course]] = [:]
         let calendar = Calendar.current
@@ -181,7 +181,7 @@ class CourseCache: ObservableObject {
 //        dateFormatter.defaultDate = Date()
 //        dateFormatter.dateFormat = "E HH:mm"
 //        let convertedDate = dateFormatter.date(from: startOfWeek!)
-//        print(convertedDate)
+//        debugLog(convertedDate)
 //
 //        
         
@@ -235,7 +235,7 @@ class CourseCache: ObservableObject {
             
             log("Done grabbing content.")
 
-//            print(coursesOrdered.count)
+//            debugLog(coursesOrdered.count)
             let result = self.buildCourseDictionary(
                 from: coursesParsed,
                 startDate: startOfWeek!,

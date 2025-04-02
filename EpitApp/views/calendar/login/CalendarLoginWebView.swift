@@ -20,7 +20,7 @@ struct CalendarLoginWebView: UIViewRepresentable {
             let url = navigationResponse.response.url;
             if (url!.absoluteString.contains("https://zeus.ionis-it.com/officeConnect/#access_token=")) {
                 let t = url!.absoluteString.replacingOccurrences(of: "#access_token=", with: "?access_token=")
-                debugPrint("FOUND TOKEN !")
+                debugLog("FOUND TOKEN !: \(t)")
                 let token = getURLParameterValue(url: t, "access_token")!;
                 zeusAuthModel.updateTokenAndValidityFromOfficeToken(officeToken: token)
                 DispatchQueue.main.async {

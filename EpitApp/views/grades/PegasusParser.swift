@@ -140,7 +140,7 @@ class PegasusParser: ObservableObject {
         }
         
         self.progressState = .parsing
-        print("Done fetching.")
+        log("Done fetching.")
         
         DispatchQueue.global(qos: .userInitiated).async {
             guard let parsed = self.parseDate(rawContent: rawContent) else {
@@ -154,7 +154,7 @@ class PegasusParser: ObservableObject {
                 self.data = parsed
                 self.progressState = .done
             }
-            print("Done parsing.")
+            log("Done parsing.")
         }
     }
     
@@ -162,7 +162,7 @@ class PegasusParser: ObservableObject {
         let url = NSURL(string: "https://prepa-epita.helvetius.net/pegasus/index.php?com=extract&job=extract-notes")
         
         var request = URLRequest(url: url! as URL, cachePolicy: .reloadIgnoringLocalCacheData)
-        print("PHPSESSID=\(pegasusAuthModel.pegasusPhpSessId!)")
+        log("PHPSESSID=\(pegasusAuthModel.pegasusPhpSessId!)")
         request.setValue("PHPSESSID=\(pegasusAuthModel.pegasusPhpSessId!)", forHTTPHeaderField: "Cookie")
         request.httpMethod = "GET"
                 
@@ -170,12 +170,12 @@ class PegasusParser: ObservableObject {
             let (data, response) = try await URLSession.shared.data(for: request)
             
             guard let res = response as? HTTPURLResponse, res.statusCode == 200 else {
-                print("Invalid response.")
+                warn("Invalid response.")
                 return nil
             }
 
             guard let responseString = String(data: data, encoding: .isoLatin1) else {
-                print("Failed to convert data to string.")
+                warn("Failed to convert data to string.")
                 return nil
             }
 
@@ -189,7 +189,7 @@ class PegasusParser: ObservableObject {
         do {
             let doc = try SwiftSoup.parse(rawContent)
             return try parseYear(doc: doc)
-        } catch Exception.Error(let type, let message) {
+        } catch Exception.Error(_, _) {
             self.progressState = .errorParsing
             return nil
         } catch {
@@ -242,7 +242,7 @@ class PegasusParser: ObservableObject {
                 let weirdY = try meta[3].text()
                 let label = try meta[4].text()
                 if (weirdY.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty || label.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty) {
-                    print("Item seems empty, skipping row.")
+                    warn("Item seems empty, skipping row.")
                     continue
                 }
 

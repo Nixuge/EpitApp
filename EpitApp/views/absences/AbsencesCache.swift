@@ -74,7 +74,7 @@ struct AbsencesPeriod: Decodable, Identifiable {
         // Parse the date strings into Date objects
         guard let startDate = dateFormatter.date(from: self.beginDate),
               let endDate = dateFormatter.date(from: self.endDate) else {
-            errorLog("ERROR INTIALIZING ISCURRENTPERIOD DATE.")
+            errorr("ERROR INTIALIZING ISCURRENTPERIOD DATE.")
             self.isCurrentPeriod = false
             return
         }
@@ -139,7 +139,7 @@ class AbsencesCache: ObservableObject {
         // TODO: Weird things r done here :/
         // check logs while running to understand
 //        if (state == .loading) {
-//            print("grabNewContent: already loading.")
+//            warn("already loading.")
 //            completion(false)
 //            return
 //        }

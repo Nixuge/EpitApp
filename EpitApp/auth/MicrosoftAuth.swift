@@ -28,21 +28,21 @@ class MicrosoftAuth: ObservableObject {
         do {
             let config = MSALPublicClientApplicationConfig(clientId: kClientID)
             self.applicationContext = try MSALPublicClientApplication(configuration: config)
-            print("Application context initialized successfully")
+            log("Application context initialized successfully")
             if let retrievedToken = KeychainHelper.shared.retrieveValue(key: MicrosoftAuth.keyToken),
                let retrievedIdentifier = KeychainHelper.shared.retrieveValue(key: MicrosoftAuth.keyId) {
-                print("Token retrieved from Keychain")
+                log("Token retrieved from Keychain")
                 self.isAuthenticated = true
                 self.token = retrievedToken
             }
         } catch {
-            print("Failed to initialize application context: \(error)")
+            errorr("Failed to initialize application context: \(error)")
         }
     }
     
     func login(completion: @escaping (Bool) -> Void = { _ in }) {
         guard let view = getRootViewController() else {
-            print("Couldn't get root view controller for Microsoft auth !")
+            errorr("Couldn't get root view controller for Microsoft auth !")
             completion(false)
             return
         }
@@ -54,7 +54,7 @@ class MicrosoftAuth: ObservableObject {
         let parameters = MSALInteractiveTokenParameters(scopes: kScopes, webviewParameters: webviewParameters)
         self.applicationContext?.acquireToken(with: parameters) { (result, error) in
             if let error = error {
-                print("Could not acquire token: \(error)")
+                warn("Could not acquire token: \(error)")
                 completion(false)
                 return
             }
@@ -65,17 +65,17 @@ class MicrosoftAuth: ObservableObject {
 //            }
 
             guard let result = result else {
-                print("Result is nil")
+                warn("Result is nil")
                 completion(false)
                 return
             }
             
-            print("Access token: \(result.accessToken)")
-            print("Identifier: \(result.account.identifier ?? "nil")")
+            log("Access token: \(result.accessToken)")
+            log("Identifier: \(result.account.identifier ?? "nil")")
             KeychainHelper.shared.saveValue(result.accessToken, key: MicrosoftAuth.keyToken)
             KeychainHelper.shared.saveValue(result.account.identifier, key: MicrosoftAuth.keyId)
 
-            print("Saved token.")
+            log("Saved token.")
             DispatchQueue.main.async {
                 self.isAuthenticated = true
                 self.token = result.accessToken
@@ -85,9 +85,9 @@ class MicrosoftAuth: ObservableObject {
     }
     
     func refreshTokenUsingSavedId(completion: @escaping (Bool) -> Void = {_ in }) {
-        print("Trying to refresh Microsoft auth token using saved id.")
+        log("Trying to refresh Microsoft auth token using saved id.")
         guard let accountId = KeychainHelper.shared.retrieveValue(key: MicrosoftAuth.keyId) else {
-            print("refreshTokenUsingSavedId: no/empty saved id.")
+            log("refreshTokenUsingSavedId: no/empty saved id.")
             completion(false)
             return
         }
@@ -97,18 +97,18 @@ class MicrosoftAuth: ObservableObject {
 
         self.applicationContext?.accountsFromDevice(for: msalParameters) { accounts, error in
             if let error = error {
-                print("Couldn't query current account with error: \(error)")
+                warn("Couldn't query current account with error: \(error)")
                 completion(false)
                 return
             }
             guard let accounts = accounts else {
-                print("No accounts saved in device")
+                warn("No accounts saved in device")
                 completion(false)
                 return
             }
             let foundAccTemp = accounts.first { $0.identifier == accountId }
             guard let foundAccount = foundAccTemp else {
-                print("Account with id \(accountId) not found in saved device accounts")
+                warn("Account with id \(accountId) not found in saved device accounts")
                 completion(false)
                 return
             }
@@ -117,23 +117,23 @@ class MicrosoftAuth: ObservableObject {
             let parameters = MSALSilentTokenParameters(scopes: kScopes, account: foundAccount)
             self.applicationContext?.acquireTokenSilent(with: parameters) { (result, error) in
                 if let error = error {
-                    print("refreshTokenUsingSavedId: Could not acquire token: \(error)")
+                    warn("Could not acquire token: \(error)")
                     completion(false)
                     return
                 }
 
                 guard let result = result else {
-                    print("refreshTokenUsingSavedId: Result is nil")
+                    warn("Result is nil")
                     completion(false)
                     return
                 }
                 
-                print("Access token: \(result.accessToken)")
-                print("Identifier: \(result.account.identifier ?? "nil")")
+                log("Access token: \(result.accessToken)")
+                log("Identifier: \(result.account.identifier ?? "nil")")
                 KeychainHelper.shared.saveValue(result.accessToken, key: MicrosoftAuth.keyToken)
                 KeychainHelper.shared.saveValue(result.account.identifier, key: MicrosoftAuth.keyId)
 
-                print("Saved token.")
+                log("Saved token.")
                 DispatchQueue.main.async {
                     self.isAuthenticated = true
                     self.token = result.accessToken

@@ -64,15 +64,15 @@ public func warn(_ message: Any, file: String = #file, function: String = #funct
     log(message, .warning, file: file, function: function, line: line)
 }
 
-public func errorLog(_ message: Any, file: String = #file, function: String = #function, line: Int = #line) {
+public func errorr(_ message: Any, file: String = #file, function: String = #function, line: Int = #line) {
     log(message, .error, file: file, function: function, line: line)
 }
 
-public func criticalLog(_ message: Any, file: String = #file, function: String = #function, line: Int = #line) {
+public func critical(_ message: Any, file: String = #file, function: String = #function, line: Int = #line) {
     log(message, .critical, file: file, function: function, line: line)
 }
 
-public func infoLog(_ message: Any, file: String = #file, function: String = #function, line: Int = #line) {
+public func info(_ message: Any, file: String = #file, function: String = #function, line: Int = #line) {
     log(message, file: file, function: function, line: line)
 }
 

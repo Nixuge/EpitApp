@@ -52,7 +52,7 @@ class PegasusAuthModel: ObservableObject {
         }
         
         setValidity(newAuthState: AuthState.loading)
-        debugPrint("Checking phpSessId validity !")
+        log("Checking phpSessId validity !")
         
         // Step 1: Grab the token given by Office
         let url = NSURL(string: "https://prepa-epita.helvetius.net/pegasus/index.php")
@@ -64,12 +64,11 @@ class PegasusAuthModel: ObservableObject {
             
         let dataTask = session.dataTask(with: request as URLRequest) { (data, response, error) -> Void in
             if let res = response as? HTTPURLResponse {
-//                print("res: \(String(describing: res))")
-//                print("Response: \(String(describing: response))")
+//                log("res: \(String(describing: res))")
+//                log("Response: \(String(describing: response))")
                 if (res.statusCode == 200) {
                     if let responseString = String(data: data!, encoding: .isoLatin1) {
                         if responseString.contains("<td class=\"logout item\">") {
-                            print("OE!!")
                             self.setValidity(newAuthState: AuthState.authentified)
                             return
                         } else {
@@ -82,7 +81,6 @@ class PegasusAuthModel: ObservableObject {
                     self.setValidity(newAuthState: AuthState.unauthenticated)
                 }
             } else {
-//                print("Error: \(String(describing: error))")
                 self.setValidity(newAuthState: AuthState.unauthenticated)
             }
         }

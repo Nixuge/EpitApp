@@ -105,7 +105,6 @@ class CourseDetailsCache: ObservableObject {
             
             self.details[idReservation] = .loaded(detailsParsed)
         }
-        print("Ok yes")
         dataTask.resume()
     }
 }

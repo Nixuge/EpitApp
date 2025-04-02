@@ -59,7 +59,7 @@ class ZeusAuthModel: ObservableObject {
                 self.setValidity(newAuthState: .unauthenticated)
                 return
             }
-            print("Failed to validate token, calling updateTokenAndValidityFromOfficeToken")
+            warn("Failed to validate token, calling updateTokenAndValidityFromOfficeToken")
             self.attemptMicrosotLoginReAuth()
         }
     }
@@ -72,13 +72,13 @@ class ZeusAuthModel: ObservableObject {
                 return
             }
             
-            print("attemptMicrosotLoginReAuth: failed to auth using saved token, trying to refresh token.")
+            warn("attemptMicrosotLoginReAuth: failed to auth using saved token, trying to refresh token.")
             MicrosoftAuth.shared.refreshTokenUsingSavedId() { success2 in
                 self.updateTokenAndValidityFromOfficeToken(officeToken: MicrosoftAuth.shared.token) { success3 in
                     if (success3) {
-                        print("attemptMicrosotLoginReAuth: logged in")
+                        log("attemptMicrosotLoginReAuth: logged in")
                     } else {
-                        print("attemptMicrosotLoginReAuth: failed.")
+                        warn("attemptMicrosotLoginReAuth: failed.")
                     }
                 }
             }
@@ -91,7 +91,7 @@ class ZeusAuthModel: ObservableObject {
         // 2 - call a post to https://zeus.ionis-it.com/api/User/OfficeLogin w {"accessToken":"TOKEN"} and you'll get back the token used for authorization
         // this does the 2nd step. and calls updateValidityFromToken just to be sure
         if (officeToken == nil || officeToken!.isEmpty) {
-            print("officeToken is nil or empty, returning.")
+            warn("officeToken is nil or empty, returning.")
             if (setLoadingState) { setValidity(newAuthState: AuthState.unauthenticated) }
             completion(false)
             return
@@ -110,32 +110,32 @@ class ZeusAuthModel: ObservableObject {
         
         let dataTask = session.dataTask(with: request as URLRequest) { (data, response, error) -> Void in
             guard let res = response as? HTTPURLResponse else {
-                print("zeusauth updateTokenAndValidityFromOfficeToken: failed at HTTPURLResponse step")
+                warn("failed at HTTPURLResponse step")
                 if (setLoadingState) { self.setValidity(newAuthState: AuthState.unauthenticated) }
                 completion(false)
                 return
             }
-//            print("res: \(String(describing: res))")
-//            print("Response: \(String(describing: response))")
+//            log("res: \(String(describing: res))")
+//            log("Response: \(String(describing: response))")
             
             guard res.statusCode == 200 else {
-                print("zeusauth updateTokenAndValidityFromOfficeToken: failed at statuscode step: \(res.statusCode)")
+                warn("failed at statuscode step: \(res.statusCode)")
                 if (setLoadingState) { self.setValidity(newAuthState: AuthState.unauthenticated) }
                 completion(false)
                 return
             }
             
             guard let outputToken = String(data: data!, encoding: .utf8) else {
-                print("zeusauth updateTokenAndValidityFromOfficeToken: failed at outputToken step")
+                warn("failed at outputToken step")
                 if (setLoadingState) { self.setValidity(newAuthState: AuthState.unauthenticated) }
                 completion(false)
                 return
             }
             
-            print("Updating !")
+            log("Updating !")
             DispatchQueue.main.async {
                 self.token = "Bearer \(outputToken)"
-//                print(self.token!)
+//                log(self.token!)
 //                self.updateValidityFromToken()
                 if (setLoadingState) { self.setValidity(newAuthState: AuthState.authentified) }
                 completion(true)
@@ -145,10 +145,10 @@ class ZeusAuthModel: ObservableObject {
     }
     
     func updateValidityFromToken(setLoadingState: Bool = true, completion: @escaping (Bool) -> Void = { _ in }) {
-        print("Checking token validity !")
+        log("Checking token validity !")
         
         if (token == nil || token!.isEmpty) {
-            print("zeusauth updateValidityFromToken: token is empty or nil")
+            warn("token is empty or nil")
             if (setLoadingState) { setValidity(newAuthState: AuthState.unauthenticated) }
             completion(false)
             return
@@ -160,28 +160,25 @@ class ZeusAuthModel: ObservableObject {
         // Step 1: Grab the token given by Office
         let url = NSURL(string: "https://zeus.ionis-it.com/api/group/hierarchy")
         var request = URLRequest(url: url! as URL, cachePolicy: .reloadIgnoringLocalCacheData)
-//        debugPrint(token!)
+//        debugLog(token!)
         request.setValue(token, forHTTPHeaderField: "Authorization")
         request.httpMethod = "GET"
         let session = URLSession.shared
             
         let dataTask = session.dataTask(with: request as URLRequest) { (data, response, error) -> Void in
             guard let res = response as? HTTPURLResponse else {
-                print("zeusauth updateValidityFromToken: failed at HTTPURLResponse step")
+                warn("failed at HTTPURLResponse step")
                 if (setLoadingState) { self.setValidity(newAuthState: AuthState.unauthenticated) }
                 completion(false)
                 return
             }
-//            print("res: \(String(describing: res))")
-//            print("Response: \(String(describing: response))")
-            
+
             guard res.statusCode == 200 else {
-                print("zeusauth updateValidityFromToken: failed at statuscode step: \(res.statusCode)")
+                warn("failed at statuscode step: \(res.statusCode)")
                 if (setLoadingState) { self.setValidity(newAuthState: AuthState.unauthenticated) }
                 completion(false)
                 return
             }
-            print("Function: \(#function), line: \(#line) \(#file)")
 
             log("zeusauth updateValidityFromToken: success")
             if (setLoadingState) { self.setValidity(newAuthState: AuthState.authentified) }
