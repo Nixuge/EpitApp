@@ -41,26 +41,30 @@ struct ChooseIdView: View {
             
             Spacer()
             
-            switch selectedIdCache.loadingState {
-            case .def:
-                Text("Checking login...")
-            case .loading:
-                Text("Loading hierarchy...")
-                ProgressView()
-            case .done:
-                ListIdChooseView(items: currentSearchResult, isPresented: $isPresented)
-                    .onAppear() {
-                        currentSearchResult = selectedIdCache.searchForName(searchText, in: selectedIdCache.allIds!)
+            VStack {
+                switch selectedIdCache.loadingState {
+                case .def:
+                    Text("Checking login...")
+                    ProgressView()
+                case .loading:
+                    Text("Loading hierarchy...")
+                    ProgressView()
+                case .done:
+                    ListIdChooseView(items: currentSearchResult, isPresented: $isPresented)
+                        .onAppear() {
+                            currentSearchResult = selectedIdCache.searchForName(searchText, in: selectedIdCache.allIds!)
+                        }
+                        .onChange(of: searchText) { newValue in
+                            currentSearchResult = selectedIdCache.searchForName(newValue, in: selectedIdCache.allIds!)
+                        }
+                case .failed:
+                    Text("Failed to load hierarchy.")
+                    FancyButton(text: "Retry ?") {
+                        selectedIdCache.getIdList()
                     }
-                    .onChange(of: searchText) { newValue in
-                        currentSearchResult = selectedIdCache.searchForName(newValue, in: selectedIdCache.allIds!)
-                    }
-            case .failed:
-                Text("Failed to load hierarchy.")
-                FancyButton(text: "Retry ?") {
-                    selectedIdCache.getIdList()
                 }
             }
+            .animation(.easeInOut, value: selectedIdCache.loadingState)
             
             Spacer()
         }
@@ -72,7 +76,7 @@ struct ChooseIdView: View {
 
 
 func onButtonClick(row: HierarchyNode, isPresented: Binding<Bool>) {
-    print("Tapped on \(row.name) (id \(row.id))")
+    log("Tapped on \(row.name) (id \(row.id))")
     SelectedIdCache.shared.id = row.id
     isPresented.wrappedValue = false
     CourseCache.shared.clearAllCourses()

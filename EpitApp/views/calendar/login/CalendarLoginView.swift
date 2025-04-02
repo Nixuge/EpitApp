@@ -21,26 +21,16 @@ struct CalendarLoginView: View {
                     ZeusSettings.shared.shouldUseOfficeTokenToLogin = true
                 }
                 if (microsoftAuth.isAuthenticated) {
-                    print("Authentified, trying direct.")
-                    zeusAuthModel.updateTokenAndValidityFromOfficeToken(officeToken: microsoftAuth.token) { success in
-                        if success {
-                            print("Direct login successful!")
-                        } else {
-                            print("Direct login failed, trying to refresh token.")
-                            microsoftAuth.refreshTokenUsingSavedId { success in
-                                if success {
-                                    zeusAuthModel.updateTokenAndValidityFromOfficeToken(officeToken: self.microsoftAuth.token)
-                                }
-                            }
-                        }
-                    }
+                    log("Authentified, trying direct.")
+                    
+                    zeusAuthModel.attemptMicrosotLoginReAuth()
                 } else {
                     microsoftAuth.login { success in
                         if success {
-                           print("Login successful!")
+                            log("Login successful!")
                            zeusAuthModel.updateTokenAndValidityFromOfficeToken(officeToken: microsoftAuth.token)
                        } else {
-                           print("Login failed!")
+                           log("Login failed!")
                        }
                     }
                 }

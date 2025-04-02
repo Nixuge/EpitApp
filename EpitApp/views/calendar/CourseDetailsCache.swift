@@ -52,16 +52,16 @@ class CourseDetailsCache: ObservableObject {
     }
 
     func loadDetailsCache(idReservation: Int) async {
-        print("Called !")
+        log("Called !")
                 
         if case .loaded(_) = self.details[idReservation] {
             // todo: CHECK FOR VALIDITY WITH TIMEINTERVAL
-            print("Already valid.")
+            warn("Already valid.")
             return;
         }
 
         guard let token = zeusAuthModel.token else {
-            print("Token is nil.")
+            warn("Token is nil.")
             return
         }
         
@@ -77,17 +77,17 @@ class CourseDetailsCache: ObservableObject {
         let dataTask = session.dataTask(with: request as URLRequest) { (data, response, error) -> Void in
             guard let res = response as? HTTPURLResponse else {
                 self.details[idReservation] = .failed("Couldn't get an HTTPURLResponse")
-                print("Failed CourseDetailsCache grabbing at HTTPURLResponse step")
+                warn("Failed at HTTPURLResponse step")
                 return
             }
             guard res.statusCode == 200 else {
                 self.details[idReservation] = .failed("Wrong statuscode")
-                print("Failed CourseDetailsCache grabbing at statuscode step: \(res.statusCode)")
+                warn("Failed at statuscode step: \(res.statusCode)")
                 return
             }
             guard let data = data else {
                 self.details[idReservation] = .failed("Couldn't unwrap data.")
-                print("Failed CourseDetailsCache grabbing at data unwrap step")
+                warn("Failed at data unwrap step")
                 return
             }
             
@@ -96,13 +96,13 @@ class CourseDetailsCache: ObservableObject {
                 detailsParsed = try JSONDecoder().decode(CourseDetails.self, from: data)
             } catch {
                 self.details[idReservation] = .failed("Couldn't deode json")
-                print("Failed CourseDetailsCache grabbing at JSON decoding step: \(error)")
+                warn("Failed at JSON decoding step: \(error)")
                 return
             }
             
-            print("Done grabbing content.")
-            print(detailsParsed)
-
+            log("Done grabbing content.")
+            log(detailsParsed)
+            
             self.details[idReservation] = .loaded(detailsParsed)
         }
         print("Ok yes")

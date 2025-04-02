@@ -24,7 +24,7 @@ struct AbsencesPeriodView: View {
                                 AbsenceSingleView(absence: absence)
                             }
                         }
-                        .padding(.leading, 5)
+                        .padding(.leading, 2)
                     }
 
                     
@@ -47,7 +47,7 @@ struct AbsencesPeriodView: View {
                             
                             if (period.isCurrentPeriod) {
                                 RoundedRectangle(cornerSize: CGSize(width: 5, height: 5))
-                                    .stroke(.white, lineWidth: 2)
+                                    .stroke(Color.init(hex: "8bfc92"), lineWidth: 2)
                                     .padding(2)
                             }
                         }

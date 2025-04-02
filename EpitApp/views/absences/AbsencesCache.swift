@@ -74,7 +74,7 @@ struct AbsencesPeriod: Decodable, Identifiable {
         // Parse the date strings into Date objects
         guard let startDate = dateFormatter.date(from: self.beginDate),
               let endDate = dateFormatter.date(from: self.endDate) else {
-            print("ERROR INTIALIZING ISCURRENTPERIOD DATE.")
+            errorLog("ERROR INTIALIZING ISCURRENTPERIOD DATE.")
             self.isCurrentPeriod = false
             return
         }
@@ -112,7 +112,7 @@ class AbsencesCache: ObservableObject {
     
     func onAppear() {
         grabNewContent(completion: { (success) in
-            print("DONE GRABBING: \(success)")
+            log("DONE GRABBING: \(success)")
             if (success) {
                 self.absencesAuthModel.setValidity(newAuthState: .authentified)
             } else {
@@ -128,23 +128,31 @@ class AbsencesCache: ObservableObject {
     }
     
     func grabNewContent(completion: @escaping (Bool) -> Void = { _ in }, force: Bool = false) {
-        print("grabNewContent request received.")
+        log("request received.")
         
         if (!force && !content.isEmpty) {
-            print("grabNewContent: Non empty content and no force, returning.")
+            warn("Non empty content and no force, returning.")
             completion(false)
             return
         }
         
+        // TODO: Weird things r done here :/
+        // check logs while running to understand
+//        if (state == .loading) {
+//            print("grabNewContent: already loading.")
+//            completion(false)
+//            return
+//        }
+        
         guard let token = absencesAuthModel.token else {
-            print("grabNewContent: token is nil.")
+            warn("token is nil.")
             completion(false)
             return
         }
         
 //        setState(.loading)
         self.state = .loading
-        print("State: \(self.state)")
+        log("State: \(self.state)")
         let url = NSURL(string: "https://absences.epita.net/api/Users/student/grades")
         var request = URLRequest(url: url! as URL, cachePolicy: .reloadIgnoringLocalCacheData)
         request.httpMethod = "GET"
@@ -157,19 +165,19 @@ class AbsencesCache: ObservableObject {
             guard let res = response as? HTTPURLResponse else {
                 self.setState(.loaded)
                 completion(false)
-                print("Failed new content grabbing at HTTPURLResponse step")
+                warn("Failed at HTTPURLResponse step")
                 return
             }
             guard res.statusCode == 200 else {
                 self.setState(.loaded)
                 completion(false)
-                print("Failed new content grabbing at statuscode step: \(res.statusCode)")
+                warn("Failed at statuscode step: \(res.statusCode)")
                 return
             }
             guard let data = data else {
                 self.setState(.loaded)
                 completion(false)
-                print("Failed new content grabbing at data unwrap step")
+                warn("Failed at data unwrap step")
                 return
             }
             
@@ -179,11 +187,11 @@ class AbsencesCache: ObservableObject {
             } catch {
                 self.setState(.loaded)
                 completion(false)
-                print("Failed new content grabbing at JSON decoding step: \(error)")
+                warn("Failed at JSON decoding step: \(error)")
                 return
             }
             
-            print("Done grabbing content.")
+            log("Done grabbing content.")
             
             // Get the most recent period at the top.
             // Note: Could use a sort for reddundance, but rn a reverse works just fine

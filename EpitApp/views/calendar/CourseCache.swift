@@ -54,7 +54,7 @@ class CourseCache: ObservableObject {
 
             var currentDay = max(startDate, courseStartDay)
             while currentDay <= min(endDate, courseEndDay) {
-                print("Processing \(currentDay.FNT) (\(endDate.FNT) - \(courseEndDay.FNT))")
+                debugLog("Processing \(currentDay.FNT) (\(endDate.FNT) - \(courseEndDay.FNT))")
                 let currentDayStart = calendar.startOfDay(for: currentDay)
                 let currentDayEnd = calendar.date(byAdding: .day, value: 1, to: currentDayStart)!
                 
@@ -84,9 +84,8 @@ class CourseCache: ObservableObject {
         for (date, _) in input {
             coursesByDate[date] = []
         }
-        #if DEBUG
-        print("Courses by date: \(coursesByDate)")
-        #endif
+        
+        debugLog("Courses by date: \(coursesByDate)")
         
         for (date, var courses) in input {
             var currentDateCourseRange: [CourseRange] = []
@@ -101,9 +100,9 @@ class CourseCache: ObservableObject {
                         courses: [c])
                 )
                 // TODO: Change overlaps into multiple courses.
-                print("\(c.name) (\(c.startDate.startMinutesFromDay) - \(c.endDate.startMinutesFromDay))")
+                debugLog("\(c.name) (\(c.startDate.startMinutesFromDay) - \(c.endDate.startMinutesFromDay))")
             }
-            print("============================")
+            debugLog("============================")
         
             
             coursesByDate[date] = currentDateCourseRange
@@ -138,7 +137,7 @@ class CourseCache: ObservableObject {
         }
         
         for (_, courses) in output {
-            print(courses.count)
+            debugLog(courses.count.description)
         }
         return output
     }
@@ -159,13 +158,13 @@ class CourseCache: ObservableObject {
     }
 
     func loadCourses(date: Date) async {
-        print("Called !")
+        log("Called !")
         
         lastRequestedDate = date
         
         if (self.courses[date.FNT] != nil) {
             // todo: CHECK FOR VALIDITY WITH TIMEINTERVAL
-            print("Already valid.")
+            warn("Already valid.")
             return;
         }
         
@@ -194,12 +193,12 @@ class CourseCache: ObservableObject {
         let endDateString = isoDateFormatter.string(from: endOfWeek!)
         
         guard let token = zeusAuthModel.token else {
-            print("Token is nil.")
+            warn("Token is nil.")
             return
         }
         
         guard let classId = SelectedIdCache.shared.idString else {
-            print("Class id is null")
+            warn("Class id is null")
             return
         }
         
@@ -214,15 +213,15 @@ class CourseCache: ObservableObject {
         
         let dataTask = session.dataTask(with: request as URLRequest) { (data, response, error) -> Void in
             guard let res = response as? HTTPURLResponse else {
-                print("Failed coursecache grabbing at HTTPURLResponse step")
+                warn("Failed at HTTPURLResponse step")
                 return
             }
             guard res.statusCode == 200 else {
-                print("Failed coursecache grabbing at statuscode step: \(res.statusCode)")
+                warn("Failed at statuscode step: \(res.statusCode)")
                 return
             }
             guard let data = data else {
-                print("Failed coursecache grabbing at data unwrap step")
+                warn("Failed at data unwrap step")
                 return
             }
             
@@ -230,13 +229,11 @@ class CourseCache: ObservableObject {
             do {
                 coursesParsed = try JSONDecoder().decode([Course].self, from: data)
             } catch {
-                print("Failed coursecache grabbing at JSON decoding step: \(error)")
+                warn("Failed at JSON decoding step: \(error)")
                 return
             }
             
-            print("Done grabbing content.")
-
-            print("===========================================================================================================================================================================================================================================================================================================")
+            log("Done grabbing content.")
 
 //            print(coursesOrdered.count)
             let result = self.buildCourseDictionary(
@@ -253,13 +250,14 @@ class CourseCache: ObservableObject {
             }
             
         }
-        print("Ok yes")
+        debugLog("Ok yes")
         dataTask.resume()
     }
     
     func reRequestLastSavedDateOtherwiseDoNothing() async {
+        log("Re requesting courses for last saved date.")
         guard let date = lastRequestedDate else {
-            print("No previous date.")
+            warn("No previous date.")
             return
         }
         await loadCourses(date: date)

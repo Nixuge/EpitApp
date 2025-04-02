@@ -95,9 +95,12 @@ struct LoadedCalendarCourseSheet: View {
                             }
                             
                         default:
-                            Text("Getting ready to load comments...")
+                            ProgressView()
+                                .progressViewStyle(CircularProgressViewStyle(tint: borderColor))
+//                            Text("Getting ready to load comments...")
+//                            Text("")
                                 .padding(.top, 10)
-                                .foregroundStyle(.gray)
+//                                .foregroundStyle(.gray)
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
