@@ -86,7 +86,14 @@ struct PegasusECUE: Identifiable {
         if (retakeNote == nil) {
             note += String(format: "%.2f", averageNote ?? 0)
         } else {
-            note += "\(String(format: "%.2f", retakeNote ?? 0)). Previously \(String(format: "%.2f", averageNote ?? 0))"
+            var inner = "unknown"
+            for grade in self.inner {
+                if (grade.originalNote != nil) {
+                    inner = String(format: "%.2f", grade.originalNote!)
+                    break
+                }
+            }
+            note += "\(String(format: "%.2f", retakeNote ?? 0)). Previously \(inner)"
         }
         
         note += ")"
@@ -99,7 +106,7 @@ struct PegasusECUEInner: Identifiable {
     let id = UUID()
     let _weirdYear: String
     let label: String
-    let averageNote: Float?
+    let originalNote: Float?
     var grades: [PegasusGrade]
 }
 
@@ -357,11 +364,13 @@ class PegasusParser: ObservableObject {
             for i in 0..<seventhDepth.count where i % 2 == 0 {
                 let row = seventhDepth[i]
                 let meta = try row.select("td")
+                
+                info(try meta[7].text())
 
                 let currentInnerECUE = PegasusECUEInner(
                     _weirdYear: try meta[7].text(),
                     label: try meta[8].text(),
-                    averageNote: Float(try meta[10].text()),
+                    originalNote: Float(try meta[10].text()),
                     grades: try parseGrades(rootElement: seventhDepth[i + 1])
                 )
 
