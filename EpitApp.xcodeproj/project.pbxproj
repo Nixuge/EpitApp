@@ -7,24 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		32880C112D5FCACE0089B183 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32880C102D5FCACA0089B183 /* ContentView.swift */; };
 		32F86FC62C870C5F00B30A88 /* EpitApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F86FC52C870C5F00B30A88 /* EpitApp.swift */; };
 		32F86FCA2C870C6000B30A88 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 32F86FC92C870C6000B30A88 /* Assets.xcassets */; };
 		32F86FCE2C870C6000B30A88 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 32F86FCD2C870C6000B30A88 /* Preview Assets.xcassets */; };
-		32F86FF12C870E9500B30A88 /* CoursesStructs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F86FF02C870E9500B30A88 /* CoursesStructs.swift */; };
 		4C9C429A0294F539AF250826 /* Pods_EpitApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C406CD6797AA6FDDAB1512F /* Pods_EpitApp.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		208B4DBA3EC54172DD7B8075 /* Pods-EpitApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EpitApp.debug.xcconfig"; path = "Target Support Files/Pods-EpitApp/Pods-EpitApp.debug.xcconfig"; sourceTree = "<group>"; };
-		32854A9A2D79E53A009EE5C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		32880C102D5FCACA0089B183 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		32854A9A2D79E53A009EE5C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		32F86FC22C870C5F00B30A88 /* EpitApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EpitApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		32F86FC52C870C5F00B30A88 /* EpitApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpitApp.swift; sourceTree = "<group>"; };
 		32F86FC92C870C6000B30A88 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		32F86FCB2C870C6000B30A88 /* EpitApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EpitApp.entitlements; sourceTree = "<group>"; };
 		32F86FCD2C870C6000B30A88 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		32F86FF02C870E9500B30A88 /* CoursesStructs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoursesStructs.swift; sourceTree = "<group>"; };
 		72E2FE9ADE9E0858BDC35E4D /* Pods-EpitApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EpitApp.release.xcconfig"; path = "Target Support Files/Pods-EpitApp/Pods-EpitApp.release.xcconfig"; sourceTree = "<group>"; };
 		8C406CD6797AA6FDDAB1512F /* Pods_EpitApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EpitApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -35,14 +31,14 @@
 			path = utils;
 			sourceTree = "<group>";
 		};
-		32AA49822D7A06CE0029C199 /* settings */ = {
+		322BB0042DB8C25800E672CE /* models */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = settings;
+			path = models;
 			sourceTree = "<group>";
 		};
-		32F762832D6232FF00B7BEB8 /* auth */ = {
+		322BB0142DB8C2D100E672CE /* controllers */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = auth;
+			path = controllers;
 			sourceTree = "<group>";
 		};
 		32F762892D62337900B7BEB8 /* views */ = {
@@ -102,17 +98,15 @@
 		32F86FC42C870C5F00B30A88 /* EpitApp */ = {
 			isa = PBXGroup;
 			children = (
-				32AA49822D7A06CE0029C199 /* settings */,
-				32854A9A2D79E53A009EE5C1 /* Info.plist */,
+				322BB0142DB8C2D100E672CE /* controllers */,
+				322BB0042DB8C25800E672CE /* models */,
 				32259DAF2D67B6C700F66936 /* utils */,
 				32F762892D62337900B7BEB8 /* views */,
-				32F762832D6232FF00B7BEB8 /* auth */,
-				32880C102D5FCACA0089B183 /* ContentView.swift */,
 				32F86FC52C870C5F00B30A88 /* EpitApp.swift */,
 				32F86FC92C870C6000B30A88 /* Assets.xcassets */,
 				32F86FCB2C870C6000B30A88 /* EpitApp.entitlements */,
 				32F86FCC2C870C6000B30A88 /* Preview Content */,
-				32F86FF02C870E9500B30A88 /* CoursesStructs.swift */,
+				32854A9A2D79E53A009EE5C1 /* Info.plist */,
 			);
 			path = EpitApp;
 			sourceTree = "<group>";
@@ -144,8 +138,8 @@
 			);
 			fileSystemSynchronizedGroups = (
 				32259DAF2D67B6C700F66936 /* utils */,
-				32AA49822D7A06CE0029C199 /* settings */,
-				32F762832D6232FF00B7BEB8 /* auth */,
+				322BB0042DB8C25800E672CE /* models */,
+				322BB0142DB8C2D100E672CE /* controllers */,
 				32F762892D62337900B7BEB8 /* views */,
 			);
 			name = EpitApp;
@@ -229,9 +223,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-EpitApp/Pods-EpitApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-EpitApp/Pods-EpitApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -245,8 +243,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				32F86FF12C870E9500B30A88 /* CoursesStructs.swift in Sources */,
-				32880C112D5FCACE0089B183 /* ContentView.swift in Sources */,
 				32F86FC62C870C5F00B30A88 /* EpitApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

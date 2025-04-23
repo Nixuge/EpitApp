@@ -119,8 +119,8 @@ class CourseCache: ObservableObject {
 //            if (!courses.isEmpty && courses[0].start != 0) {
 //                courses.insert(CourseRange(startTime: 0, endTime: courses[0].start), at: 0)
 //            }
-            if (!courses.isEmpty && courses[0].start > 480) { // 480 = 8h
-                courses.insert(CourseRange(startTime: 480, endTime: courses[0].start), at: 0)
+            if (!courses.isEmpty && courses[0].start > 360) { // 480 = 8h
+                courses.insert(CourseRange(startTime: 360, endTime: courses[0].start), at: 0)
             }
             var i = 0;
             while i < courses.count-1 {

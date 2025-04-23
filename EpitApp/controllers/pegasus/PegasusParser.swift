@@ -71,6 +71,28 @@ struct PegasusECUE: Identifiable {
     let averageNote: Float?
     let retakeNote: Float?
     var inner: [PegasusECUEInner]
+    
+    func getNotesText() -> String {
+        // Assuming if there's a retake note there's always an average note
+        if (averageNote == nil) {
+            return ""
+        }
+        
+        let maxGrade = retakeNote == nil ? averageNote! : retakeNote!
+        let good = (maxGrade >= 10) ? "✔️" : "⚠️";
+        
+        var note = "\(good) (";
+        
+        if (retakeNote == nil) {
+            note += String(format: "%.2f", averageNote ?? 0)
+        } else {
+            note += "\(String(format: "%.2f", retakeNote ?? 0)). Previously \(String(format: "%.2f", averageNote ?? 0))"
+        }
+        
+        note += ")"
+        
+        return note
+    }
 }
 
 struct PegasusECUEInner: Identifiable {

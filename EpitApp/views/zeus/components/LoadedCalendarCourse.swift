@@ -8,10 +8,14 @@
 import SwiftUI
 
 
-struct LoadedCalendarCourse: View {    
+struct LoadedCalendarCourse: View {
+    let isCurrentDay: Bool
     let range: CourseRange
-    @State private var showPopup = false
     
+    @State private var showPopup = false
+
+    @State private var currentMinute: Int = calculateCurrentMinute()
+
     var body: some View {
         // Formula has been changed to grow slower.
         // Eg 1h is going to be ~46px (almost the same height as the original formula), but
@@ -36,8 +40,25 @@ struct LoadedCalendarCourse: View {
                         .multilineTextAlignment(.trailing)
                         .frame(width: 50, alignment: .trailing)
                 }
+                
+                ZStack {
+                    RoundedRectangle(cornerSize: CGSize(width: 20, height: 30)).frame(width: 5, height: CGFloat(height)).foregroundColor(courseColor)
+                    
+                    if isCurrentDay && range.start <= currentMinute && currentMinute <= range.end {
+                        RoundedRectangle(cornerSize: CGSize(width: 20, height: 30))
+                            .frame(width: 5, height: 10)
+                            .frame(maxHeight: .infinity, alignment: .topLeading)
+                            .foregroundColor(.white.opacity(0.8))
+                            .offset(x: 0, y: calculateOverlayOffset(height))
+                    }
+                }
+                .onAppear {
+                    // Update the current minute every minute
+                    Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { _ in
+                        currentMinute = calculateCurrentMinute()
+                    }
+                }
 
-                RoundedRectangle(cornerSize: CGSize(width: 20, height: 30)).frame(width: 5, height: CGFloat(height)).foregroundColor(courseColor)
                 
                 VStack(alignment: .leading) {
                     Text(name)
@@ -62,9 +83,6 @@ struct LoadedCalendarCourse: View {
                             .frame(alignment: .topLeading)
                             .foregroundColor(.gray)
                     }
-                    
-    //                Spacer()
-                    
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -83,4 +101,22 @@ struct LoadedCalendarCourse: View {
             LoadedCalendarCourseSheet(range: range, borderColor: courseColor)
         }
     }
+    
+    private func calculateOverlayOffset(_ viewHeight: CGFloat) -> CGFloat {
+        let totalMinutes = CGFloat(range.end - range.start)
+        let pixelPerMinute = (viewHeight - 5) / totalMinutes
+
+        let minutesPassed = CGFloat(currentMinute - range.start)
+        return pixelPerMinute * minutesPassed
+    }
+}
+
+private func calculateCurrentMinute() -> Int {
+    let calendar = Calendar.current
+    let now = Date()
+    let hour = calendar.component(.hour, from: now)
+    let minute = calendar.component(.minute, from: now)
+    
+    let res = hour * 60 + minute
+    return res
 }

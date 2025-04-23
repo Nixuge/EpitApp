@@ -78,7 +78,12 @@ class AbsencesAuthModel: ObservableObject {
             warn("Already loading, returning...")
             return
         }
+        
         setValidity(newAuthState: .loading)
+        
+        self.user = username
+        self.password = password
+                
         let json: [String: String] = ["login": username, "password": password]
         let jsonData = try? JSONSerialization.data(withJSONObject: json)
         
@@ -114,8 +119,6 @@ class AbsencesAuthModel: ObservableObject {
         
             log("Done logging in.")
             log(authRes)
-            self.user = username
-            self.password = password
             self.token = authRes.access_token
             self.setValidity(newAuthState: .authentified)
         }
@@ -123,7 +126,12 @@ class AbsencesAuthModel: ObservableObject {
     }
     
     func logout() {
-        setValidity(newAuthState: .unauthenticated)
-        self.token = nil
+        // TODO: Fix crash on logout when clearing cache IDK WHY since view shouldve changed.
+        // EDIT: MAY BE BECAUSE OF ANIMATION
+        DispatchQueue.main.async {
+            self.authState = .unauthenticated
+            self.token = nil
+//            AbsencesCache.shared.clear()
+        }
     }
 }

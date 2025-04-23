@@ -209,4 +209,12 @@ class AbsencesCache: ObservableObject {
         }
         dataTask.resume()
     }
+    
+    func clear() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            self.state = .loading
+            self.content = []
+        }
+
+    }
 }

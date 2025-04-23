@@ -142,10 +142,12 @@ struct LoadedCalendarView: View {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 20) {
                             ForEach(courseCache.courses[date.FNT]!.1) { range in
+                                let isCurrentDay = date.FNT == Date().FNT
+                                
                                 if range.courses.count == 0 {
-                                    LoadedCalendarSeparator(range: range)
+                                    LoadedCalendarSeparator(isCurrentDay: isCurrentDay, range: range)
                                 } else {
-                                    LoadedCalendarCourse(range: range)
+                                    LoadedCalendarCourse(isCurrentDay: isCurrentDay, range: range)
                                 }
                             }
                         }

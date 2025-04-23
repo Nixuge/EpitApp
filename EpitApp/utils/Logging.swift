@@ -5,6 +5,8 @@
 //  Created by Quenting on 02/04/2025.
 //
 
+let smallFileNames = true
+
 import Foundation
 import OSLog
 
@@ -33,10 +35,18 @@ func emojiPrefix(for logLevel: LogLevel) -> String {
 // The env variable is set because otherwise i get an ungodly amount of random logs.
 //let logger = Logger()
 
+func removeLowercaseLetters(_ string: String) -> String {
+    return string.filter { !$0.isLowercase }
+}
+
 public func log(_ message: Any, _ logLevel: LogLevel = .info, file: String = #file, function: String = #function, line: Int = #line) {
     
-    let parsedFile = file.split(separator: "/").last?.replacing(".swift", with: "").description ?? "Unk"
+    var parsedFile = file.split(separator: "/").last?.replacing(".swift", with: "").description ?? "Unk"
     let parsedFunc = function.split(separator: "(").first?.description ?? "Unk"
+    
+    if (smallFileNames) {
+        parsedFile = removeLowercaseLetters(parsedFile)
+    }
     
     let prefix = emojiPrefix(for: logLevel)
     

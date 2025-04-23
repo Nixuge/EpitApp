@@ -17,8 +17,8 @@ struct PegasusECUEView: View {
         HStack(alignment: .top) {
             VStack(spacing: 5) {
                 Section {
-                    Text(ecue.label)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    Text("\(ecue.label) \(ecue.getNotesText())")
+                        .frame(maxWidth: .infinity, alignment: .center)
                         .padding(5)
 //                        .foregroundStyle(Color.black)
                         .background(
@@ -26,6 +26,11 @@ struct PegasusECUEView: View {
                                 .foregroundStyle(Color.pegasusBackgroundColor)
                             // ff7d54 and ff6130 are pretty nice (ff3c00) (fa4811)
                         )
+                        // https://stackoverflow.com/a/59277022
+                        .fixedSize(horizontal: false, vertical: true)
+                        .multilineTextAlignment(.center)
+
+
                     
 //                    Rectangle()
 //                        .frame(maxWidth: .infinity, minHeight: 1, maxHeight: 1, alignment: .leading)
