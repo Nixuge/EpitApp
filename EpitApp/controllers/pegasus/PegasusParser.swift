@@ -365,8 +365,6 @@ class PegasusParser: ObservableObject {
                 let row = seventhDepth[i]
                 let meta = try row.select("td")
                 
-                info(try meta[7].text())
-
                 let currentInnerECUE = PegasusECUEInner(
                     _weirdYear: try meta[7].text(),
                     label: try meta[8].text(),
