@@ -157,8 +157,8 @@ class PegasusParser: ObservableObject {
         Task {
             await self.parseAll()
         }
-    
 
+        
     }
 
     private func parseAll() async {

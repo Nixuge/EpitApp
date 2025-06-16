@@ -159,6 +159,11 @@ class CourseCache: ObservableObject {
 
     func loadCourses(date: Date) async {
         log("Called !")
+        if (zeusAuthModel.isGuest) {
+            log("switching to placeholder mode.")
+            await loadPlaceholderCourses(date: date)
+            return
+        }
         
         lastRequestedDate = date
         
@@ -262,4 +267,85 @@ class CourseCache: ObservableObject {
         }
         await loadCourses(date: date)
     }
+    
+    // TEST PART
+    // Note: mostly yoloed for now below, to fix up a bit.
+    func loadPlaceholderCourses(date: Date) async {
+        log("Loading placeholder courses...")
+
+        lastRequestedDate = date
+
+        // Dates are weird.
+        // For the api, we need to query from previous sunday 23:00 to this sunday 22:59:59 (UTC+1?) BUT for the actual thingys we need to get the actual days.
+        let calendar = Calendar.current
+        let startOfWeek: Date? = calendar.dateInterval(of: .weekOfYear, for: date)?.start
+        var endOfWeek: Date? = calendar.dateInterval(of: .weekOfYear, for: date)?.end
+        endOfWeek = calendar.date(byAdding: .nanosecond, value: -1000000, to: endOfWeek!)
+
+        guard let placeholderData = courseCacheSampleData.data(using: .utf8) else {
+            warn("Failed to convert placeholder JSON to data.")
+            return
+        }
+
+        let coursesParsed: [Course]
+        do {
+            coursesParsed = try JSONDecoder().decode([Course].self, from: placeholderData)
+        } catch {
+            warn("Failed at JSON decoding step: \(error)")
+            return
+        }
+
+        // Adjust dates to fit the current week
+        let adjustedCourses = adjustDates(for: coursesParsed, startOfWeek: startOfWeek!, endOfWeek: endOfWeek!)
+
+        let result = buildCourseDictionary(from: adjustedCourses, startDate: startOfWeek!, endDate: endOfWeek!)
+        let coursesNoTime = buildRangesFromDictionary(from: result)
+        let blanked = fillInBlanks(from: coursesNoTime)
+
+        let final = addSaveTime(from: blanked)
+        for (date, coursesForDate) in final {
+            self.courses[date] = coursesForDate
+        }
+    }
+
+    private func adjustDates(for courses: [Course], startOfWeek: Date, endOfWeek: Date) -> [Course] {
+        let calendar = Calendar.current
+        let dateInterval = DateInterval(start: startOfWeek, end: endOfWeek)
+        let days = calendar.dateComponents([.day], from: startOfWeek, to: endOfWeek).day! + 1
+
+        var adjustedCourses: [Course] = []
+
+        for course in courses {
+            // Randomly select a day within the current week
+            let randomDayOffset = Int.random(in: 0..<days)
+            guard let randomDay = calendar.date(byAdding: .day, value: randomDayOffset, to: startOfWeek) else {
+                continue
+            }
+
+            // Randomly select a start time within the day
+            let randomStartHour = Int.random(in: 8..<18) // Assuming courses are between 8 AM and 6 PM
+            let randomStartMinute = Int.random(in: 0..<60)
+            let randomStartSecond = Int.random(in: 0..<60)
+
+            guard let startDate = calendar.date(bySettingHour: randomStartHour, minute: randomStartMinute, second: randomStartSecond, of: randomDay) else {
+                continue
+            }
+
+            // Randomly select an end time after the start time
+            let randomDuration = Int.random(in: 60..<180) // Assuming course duration is between 1 and 3 hours
+            guard let endDate = calendar.date(byAdding: .minute, value: randomDuration, to: startDate) else {
+                continue
+            }
+
+            // Ensure the end date is within the current week
+            if dateInterval.contains(endDate) {
+                let adjustedCourse = Course(from: course, startDate: startDate, endDate: endDate)
+                adjustedCourses.append(adjustedCourse)
+            }
+        }
+
+        return adjustedCourses
+    }
+
+
 }

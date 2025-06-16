@@ -15,7 +15,7 @@ struct CalendarLoginView: View {
     let loginURL = URL(string: "https://zeus.ionis-it.com/login")!
 
     var body: some View {
-        VStack(spacing: 40) {
+        VStack(spacing: 40) {            
             FancyButton(text: "Login using Office (recommended)") {
                 DispatchQueue.main.async {
                     ZeusSettings.shared.shouldUseOfficeTokenToLogin = true
@@ -55,6 +55,15 @@ struct CalendarLoginView: View {
                 FancyButton(text: "Logout from browser") {
                     deleteAllWebKitCookies()
                 }
+            }
+
+            TextSeparator(text: "Or", sidePadding: 20)
+
+            FancyButton(text: "Guest access") {
+                DispatchQueue.main.async {
+                    ZeusSettings.shared.shouldUseOfficeTokenToLogin = false
+                }
+                zeusAuthModel.guestLogin()
             }
         }
     }

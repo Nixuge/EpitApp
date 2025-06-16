@@ -16,7 +16,10 @@ struct CalendarView: View {
         VStack {
             switch zeusAuthModel.authState {
             case .authentified:
-                if (selectedIdCache.id == nil) {
+                if (zeusAuthModel.isGuest) {
+                    LoadedCalendarView()
+                }
+                else if (selectedIdCache.id == nil) {
                     ChooseIdView(isPresented: .constant(true))
                 } else {
                     LoadedCalendarView()

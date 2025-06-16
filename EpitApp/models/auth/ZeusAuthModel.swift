@@ -24,6 +24,8 @@ class ZeusAuthModel: ObservableObject {
             UserDefaults.standard.set(token, forKey: "zeusToken")
         }
     }
+    var isGuest: Bool { return token == "GUEST" }
+
 
     init() {
         self.token = UserDefaults.standard.string(forKey: "zeusToken")
@@ -42,6 +44,13 @@ class ZeusAuthModel: ObservableObject {
         }
     }
     
+    func guestLogin() {
+        DispatchQueue.main.async {
+            self.token = "GUEST"
+            self.authState = .authentified
+        }
+    }
+    
     func attemptAllLogins() {
         // - First try and login w the Zeus token
         // - If that doesn't work, try and relog with the Microsoft token.
@@ -49,6 +58,11 @@ class ZeusAuthModel: ObservableObject {
         // Otherwise just let the user relog manually.
         
         self.setValidity(newAuthState: .loading)
+        
+        if (self.token == "GUEST") {
+            self.setValidity(newAuthState: .authentified)
+            return
+        }
         
         self.updateValidityFromToken(setLoadingState: false) { success1 in
             if (success1) {
