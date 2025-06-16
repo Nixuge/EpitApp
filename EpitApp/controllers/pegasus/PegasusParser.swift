@@ -163,7 +163,7 @@ class PegasusParser: ObservableObject {
 
     private func parseAll() async {
         self.progressState = .fetching
-        guard let rawContent = await fetchData() else {
+        guard let rawContent = (pegasusAuthModel.isGuest ? pegasusSampleData : await fetchData()) else {
             self.progressState = .errorFetching
             return
         }

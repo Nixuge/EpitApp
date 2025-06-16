@@ -22,6 +22,9 @@ class PegasusAuthModel: ObservableObject {
             UserDefaults.standard.set(pegasusPhpSessId, forKey: "pegasusPhpSessId")
         }
     }
+    
+    var isGuest: Bool { return pegasusPhpSessId == "GUEST" }
+
 
     init() {
         self.pegasusPhpSessId = UserDefaults.standard.string(forKey: "pegasusPhpSessId")
@@ -38,6 +41,13 @@ class PegasusAuthModel: ObservableObject {
         }
     }
     
+    func guestLogin() {
+        DispatchQueue.main.async {
+            self.pegasusPhpSessId = "GUEST"
+            self.authState = .authentified;
+        }
+    }
+    
     func setPhpSessId(newPhpSessId: String) {
         DispatchQueue.main.async {
             self.pegasusPhpSessId = newPhpSessId
@@ -48,6 +58,11 @@ class PegasusAuthModel: ObservableObject {
     func updateValidityFromPhpSessId() {
         if (pegasusPhpSessId == nil || pegasusPhpSessId!.isEmpty) {
             setValidity(newAuthState: AuthState.unauthenticated)
+            return
+        }
+        
+        if (self.isGuest) {
+            setValidity(newAuthState: .authentified)
             return
         }
         

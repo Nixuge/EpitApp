@@ -346,6 +346,4 @@ class CourseCache: ObservableObject {
 
         return adjustedCourses
     }
-
-
 }

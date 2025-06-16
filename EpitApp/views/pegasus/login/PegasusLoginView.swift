@@ -32,6 +32,12 @@ struct PegasusLoginView: View {
             FancyButton(text: "Logout from browser", color: .pegasusBackgroundColor) {
                 deleteAllWebKitCookies()
             }
+            
+            TextSeparator(text: "Or", sidePadding: 20)
+     
+            FancyButton(text: "Guest access", color: .pegasusBackgroundColor) {
+                pegasusAuthModel.guestLogin()
+            }
         }
     }
 }
