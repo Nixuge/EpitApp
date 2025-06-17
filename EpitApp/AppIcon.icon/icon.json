@@ -1,0 +1,87 @@
+{
+  "fill" : {
+    "linear-gradient" : [
+      "display-p3:0.00000,0.00000,0.00000,1.00000",
+      "display-p3:0.28880,0.18797,0.07259,1.00000"
+    ]
+  },
+  "groups" : [
+    {
+      "blur-material" : null,
+      "layers" : [
+        {
+          "fill" : {
+            "linear-gradient" : [
+              "display-p3:1.00000,0.64552,0.16729,1.00000",
+              "display-p3:0.96611,0.42268,0.43233,1.00000"
+            ]
+          },
+          "glass" : true,
+          "hidden" : false,
+          "image-name" : "Test3.png",
+          "name" : "Test3",
+          "opacity" : 0.8,
+          "position" : {
+            "scale" : 0.22,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "blend-mode" : "normal",
+          "fill" : {
+            "automatic-gradient" : "extended-srgb:0.00000,0.47843,1.00000,1.00000"
+          },
+          "glass" : true,
+          "image-name" : "Test2.png",
+          "name" : "Test2",
+          "opacity" : 0.8,
+          "position" : {
+            "scale" : 0.22,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "fill" : {
+            "linear-gradient" : [
+              "display-p3:0.36063,1.00000,0.27181,1.00000",
+              "display-p3:0.09231,0.57935,0.15016,1.00000"
+            ]
+          },
+          "glass" : true,
+          "image-name" : "Test1.png",
+          "name" : "Test1",
+          "opacity" : 0.8,
+          "position" : {
+            "scale" : 0.22,
+            "translation-in-points" : [
+              0,
+              0
+            ]
+          }
+        }
+      ],
+      "lighting" : "individual",
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "specular" : true,
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
+  }
+}
