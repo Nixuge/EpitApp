@@ -11,14 +11,16 @@
 			<string>me.nixuge.EpitApp</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>msauth.me.nixuge.EpitApp</string>
+				<string>me1.nixuge.epitapp</string>
+				<string>me.nixuge.epitapp</string>
+				<string>msauth.me1.nixuge.epitapp</string>
 			</array>
 		</dict>
 	</array>
-    <key>LSApplicationQueriesSchemes</key>
-    <array>
-        <string>msauthv2</string>
-        <string>msauthv3</string>
-    </array>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>msauthv2</string>
+		<string>msauthv3</string>
+	</array>
 </dict>
 </plist>
