@@ -29,7 +29,7 @@ struct AbsencesHeader: View {
                 
             Button(action: {
             }) {
-                if (selectedSemester <= absencesCache.content.count) {
+                if (selectedSemester <= absencesCache.content.count-1) {
                     let selected = absencesCache.content[selectedSemester]
                     // Without the .description i get an annoying space (eg 2 029 instead of 2029)
                     Text("\(selected.levelName) (\(selected.promo.description))")

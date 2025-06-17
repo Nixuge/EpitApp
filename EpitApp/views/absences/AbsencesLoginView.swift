@@ -17,29 +17,30 @@ struct AbsencesLoginView: View {
         if (authModel.authState == .loading) {
             ProgressView()
         } else {
-            VStack(spacing: 30) {
-                VStack(spacing: 15) {
-                    FancyTextInput(text: $loginText, placeholder: "Login")
+            VStack {
+                VStack(spacing: 30) {
+                    VStack(spacing: 15) {
+                        FancyTextInput(text: $loginText, placeholder: "Login")
+                        
+                        FancyTextInput(text: $passwordText, placeholder: "Password")
+                    }
                     
-                    FancyTextInput(text: $passwordText, placeholder: "Password")
-                }
-                
-                FancyButton(text: "Login", color: .green) {
-                    authModel.login(username: loginText, password: passwordText) { success in
-                        log("Absences login success: \(success)")
-                        if (success) {
-                            AbsencesCache.shared.grabNewContent()
+                    FancyButton(text: "Login", color: .green) {
+                        authModel.login(username: loginText, password: passwordText) { success in
+                            log("Absences login success: \(success)")
+                            if (success) {
+                                AbsencesCache.shared.grabNewContent()
+                            }
                         }
                     }
+                    
+                    if (authModel.authState == .failed) {
+                        Text("Failed to login.")
+                            .foregroundStyle(.red)
+                            .padding(.bottom, 20)
+                    }
                 }
-                
-                if (authModel.authState == .failed) {
-                    Text("Failed to login.")
-                        .foregroundStyle(.red)
-                } else {
-                    Text("")
-                }
-                
+                    
                 TextSeparator(text: "Or", sidePadding: 20)
                 
                 FancyButton(text: "Guest access", color: .green) {
