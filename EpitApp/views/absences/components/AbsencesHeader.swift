@@ -29,10 +29,16 @@ struct AbsencesHeader: View {
                 
             Button(action: {
             }) {
-                let selected = absencesCache.content[selectedSemester]
-                // Without the .description i get an annoying space (eg 2 029 instead of 2029)
-                Text("\(selected.levelName) (\(selected.promo.description))")
-                    .foregroundStyle(color)
+                if (selectedSemester <= absencesCache.content.count) {
+                    let selected = absencesCache.content[selectedSemester]
+                    // Without the .description i get an annoying space (eg 2 029 instead of 2029)
+                    Text("\(selected.levelName) (\(selected.promo.description))")
+                        .foregroundStyle(color)
+                } else {
+                    // Basically just a safeguard to not crash on a logout.
+                    Text("Unknown")
+                        .foregroundStyle(color)
+                }
             }
 
             Spacer()

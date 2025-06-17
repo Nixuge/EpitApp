@@ -42,6 +42,7 @@ struct SettingsView: View {
                     isDisabled: absencesAuth.authState != .authentified
                 ) {
                     absencesAuth.logout()
+                    AbsencesCache.shared.clear()
                 }
                 
                 FancyButton(

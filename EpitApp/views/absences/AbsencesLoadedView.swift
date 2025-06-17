@@ -25,5 +25,10 @@ struct AbsencesLoadedView: View {
             }
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
         }
+        .onAppear {
+            if (selectedSemester >= AbsencesCache.shared.content.count) {
+                selectedSemester = 0
+            }
+        }
     }
 }

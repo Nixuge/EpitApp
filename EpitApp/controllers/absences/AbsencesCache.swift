@@ -98,7 +98,7 @@ struct AbsencesSemester: Decodable {
 }
 
 enum AbsencesCacheState {
-    case loading, loaded
+    case unloaded, loading, loaded, failed
 }
 
 
@@ -107,19 +107,9 @@ class AbsencesCache: ObservableObject {
 
     @ObservedObject var absencesAuthModel = AbsencesAuthModel.shared
     
-    @Published var state: AbsencesCacheState = .loading
+    @Published var state: AbsencesCacheState = .unloaded
     @Published var content: [AbsencesSemester] = []
     
-    func onAppear() {
-        grabNewContent(completion: { (success) in
-            log("DONE GRABBING: \(success)")
-            if (success) {
-                self.absencesAuthModel.setValidity(newAuthState: .authentified)
-            } else {
-                self.absencesAuthModel.loginWithSaved()
-            }
-        })
-    }
     
     func setState(_ newState: AbsencesCacheState) {
         DispatchQueue.main.async {
@@ -128,7 +118,13 @@ class AbsencesCache: ObservableObject {
     }
     
     func grabNewContent(completion: @escaping (Bool) -> Void = { _ in }, force: Bool = false) {
-        log("request received.")
+        log("new content request received.")
+        
+        if (absencesAuthModel.isGuest) {
+            grabPlaceholderContent()
+            completion(true)
+            return
+        }
         
         if (!force && !content.isEmpty) {
             warn("Non empty content and no force, returning.")
@@ -163,29 +159,29 @@ class AbsencesCache: ObservableObject {
         
         let dataTask = session.dataTask(with: request as URLRequest) { (data, response, error) -> Void in
             guard let res = response as? HTTPURLResponse else {
-                self.setState(.loaded)
+                self.setState(.failed)
                 completion(false)
                 warn("Failed at HTTPURLResponse step")
                 return
             }
             guard res.statusCode == 200 else {
-                self.setState(.loaded)
+                self.setState(.failed)
                 completion(false)
                 warn("Failed at statuscode step: \(res.statusCode)")
                 return
             }
             guard let data = data else {
-                self.setState(.loaded)
+                self.setState(.failed)
                 completion(false)
                 warn("Failed at data unwrap step")
                 return
             }
-            
+                        
             var semesters: [AbsencesSemester]
             do {
                 semesters = try JSONDecoder().decode([AbsencesSemester].self, from: data)
             } catch {
-                self.setState(.loaded)
+                self.setState(.failed)
                 completion(false)
                 warn("Failed at JSON decoding step: \(error)")
                 return
@@ -215,6 +211,40 @@ class AbsencesCache: ObservableObject {
             self.state = .loading
             self.content = []
         }
-
+    }
+    
+    private func grabPlaceholderContent() {
+        log("Loading placeholder content as user is a guest.")
+        setState(.loading)
+                        
+        guard let jsonData = absencesCacheSampleData.data(using: .utf8) else {
+            self.setState(.failed)
+            warn("Failed to convert JSON placeholder to Data??")
+            return
+        }
+        
+        var semesters: [AbsencesSemester]
+        do {
+            semesters = try JSONDecoder().decode([AbsencesSemester].self, from: jsonData)
+        } catch {
+            self.setState(.failed)
+            warn("Failed at JSON decoding step FOR PLACEHOLDER CONTENT?: \(error)")
+            return
+        }
+        
+        log("Done grabbing content.")
+        
+        // Get the most recent period at the top.
+        // Note: Could use a sort for reddundance, but rn a reverse works just fine
+        // (by default the website sends first->last, we reverse last->first)
+        for i in 0..<semesters.count {
+            semesters[i].periods.reverse()
+//                semesters[i].periods.sort { $0.beginDate > $1.beginDate }
+        }
+                    
+        DispatchQueue.main.async {
+            self.content = semesters
+        }
+        self.setState(.loaded)
     }
 }

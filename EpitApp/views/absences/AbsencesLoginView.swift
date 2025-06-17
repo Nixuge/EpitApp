@@ -25,14 +25,26 @@ struct AbsencesLoginView: View {
                 }
                 
                 FancyButton(text: "Login", color: .green) {
-                    AbsencesAuthModel.shared.login(username: loginText, password: passwordText)
+                    authModel.login(username: loginText, password: passwordText) { success in
+                        log("Absences login success: \(success)")
+                        if (success) {
+                            AbsencesCache.shared.grabNewContent()
+                        }
+                    }
                 }
                 
                 if (authModel.authState == .failed) {
                     Text("Failed to login.")
                         .foregroundStyle(.red)
                 } else {
-                    Text("" )
+                    Text("")
+                }
+                
+                TextSeparator(text: "Or", sidePadding: 20)
+                
+                FancyButton(text: "Guest access", color: .green) {
+                    authModel.guestLogin()
+                    AbsencesCache.shared.grabNewContent()
                 }
             }
             .padding(5)
