@@ -15433,3 +15433,287 @@ td.dsp_data_td_fils{
         </table>
     </div> <!-- id_div=0 -->
 """
+
+var absencesCacheSampleData = """
+[{
+    "levelId": 0,
+    "semesterId": 46,
+    "levelName": "S2",
+    "promo": 2029,
+    "periods": [{
+        "id": 185,
+        "points": 20,
+        "grade": 12,
+        "beginDate": "2025-01-13",
+        "endDate": "2025-02-08",
+        "absences": [{
+            "slotId": 267865,
+            "startDate": "2025-01-29T07:00:00+00:00",
+            "subjectName": "Algorithmique",
+            "justificatory": null,
+            "mandatory": true
+        }, {
+            "slotId": 267866,
+            "startDate": "2025-01-29T08:00:00+00:00",
+            "subjectName": "Algorithmique",
+            "justificatory": null,
+            "mandatory": true
+        }, {
+            "slotId": 268951,
+            "startDate": "2025-02-07T15:00:00+00:00",
+            "subjectName": "Algorithmique",
+            "justificatory": null,
+            "mandatory": true
+        }, {
+            "slotId": 268952,
+            "startDate": "2025-02-07T16:00:00+00:00",
+            "subjectName": "Algorithmique",
+            "justificatory": null,
+            "mandatory": true
+        }],
+        "exclusions": []
+    }, {
+        "id": 186,
+        "points": 20,
+        "grade": 10,
+        "beginDate": "2025-02-10",
+        "endDate": "2025-03-29",
+        "absences": [{
+            "slotId": 269385,
+            "startDate": "2025-02-11T09:00:00+00:00",
+            "subjectName": "TE/FLE",
+            "justificatory": "Divers",
+            "mandatory": true
+        }, {
+            "slotId": 269386,
+            "startDate": "2025-02-11T10:00:00+00:00",
+            "subjectName": "TE/FLE",
+            "justificatory": "Divers",
+            "mandatory": true
+        }, {
+            "slotId": 271811,
+            "startDate": "2025-03-04T08:15:00+00:00",
+            "subjectName": "MATHS APEF",
+            "justificatory": null,
+            "mandatory": true
+        }, {
+            "slotId": 271812,
+            "startDate": "2025-03-04T09:15:00+00:00",
+            "subjectName": "MATHS APEF",
+            "justificatory": null,
+            "mandatory": true
+        }, {
+            "slotId": 271813,
+            "startDate": "2025-03-04T10:30:00+00:00",
+            "subjectName": "MATHS EV",
+            "justificatory": null,
+            "mandatory": true
+        }, {
+            "slotId": 271846,
+            "startDate": "2025-03-05T12:00:00+00:00",
+            "subjectName": "Physique",
+            "justificatory": null,
+            "mandatory": true
+        }, {
+            "slotId": 271847,
+            "startDate": "2025-03-05T13:00:00+00:00",
+            "subjectName": "Physique",
+            "justificatory": null,
+            "mandatory": true
+        }],
+        "exclusions": []
+    }, {
+        "id": 187,
+        "points": 20,
+        "grade": 14,
+        "beginDate": "2025-03-31",
+        "endDate": "2025-04-26",
+        "absences": [{
+            "slotId": 274299,
+            "startDate": "2025-04-01T06:00:00+00:00",
+            "subjectName": "Architecture",
+            "justificatory": null,
+            "mandatory": true
+        }, {
+            "slotId": 274907,
+            "startDate": "2025-04-07T07:00:00+00:00",
+            "subjectName": "QCM ALGO + ARCHI + Contrôle de maths",
+            "justificatory": null,
+            "mandatory": true
+        }, {
+            "slotId": 274908,
+            "startDate": "2025-04-07T08:00:00+00:00",
+            "subjectName": "QCM ALGO + ARCHI + Contrôle de maths",
+            "justificatory": null,
+            "mandatory": true
+        }],
+        "exclusions": []
+    }, {
+        "id": 220,
+        "points": 0,
+        "grade": -6,
+        "beginDate": "2025-05-05",
+        "endDate": "2025-05-11",
+        "absences": [{
+            "slotId": 277807,
+            "startDate": "2025-05-06T07:00:00+00:00",
+            "subjectName": "MATHS EV",
+            "justificatory": null,
+            "mandatory": true
+        }, {
+            "slotId": 277808,
+            "startDate": "2025-05-06T08:15:00+00:00",
+            "subjectName": "MATHS ALM",
+            "justificatory": null,
+            "mandatory": true
+        }, {
+            "slotId": 277809,
+            "startDate": "2025-05-06T09:15:00+00:00",
+            "subjectName": "MATHS ALM",
+            "justificatory": null,
+            "mandatory": true
+        }],
+        "exclusions": []
+    }]
+}, {
+    "levelId": 0,
+    "semesterId": 45,
+    "levelName": "S1",
+    "promo": 2029,
+    "periods": [{
+        "id": 177,
+        "points": 15,
+        "grade": 15,
+        "beginDate": "2024-09-02",
+        "endDate": "2024-09-20",
+        "absences": [],
+        "exclusions": []
+    }, {
+        "id": 178,
+        "points": 15,
+        "grade": 15,
+        "beginDate": "2024-09-23",
+        "endDate": "2024-10-11",
+        "absences": [],
+        "exclusions": []
+    }, {
+        "id": 179,
+        "points": 20,
+        "grade": 16,
+        "beginDate": "2024-10-14",
+        "endDate": "2024-11-22",
+        "absences": [{
+            "slotId": 156509,
+            "startDate": "2024-10-16T06:00:00+00:00",
+            "subjectName": "Algorithmique",
+            "justificatory": null,
+            "mandatory": true
+        }, {
+            "slotId": 156510,
+            "startDate": "2024-10-16T07:00:00+00:00",
+            "subjectName": "Algorithmique",
+            "justificatory": null,
+            "mandatory": true
+        }],
+        "exclusions": []
+    }, {
+        "id": 180,
+        "points": 20,
+        "grade": 2,
+        "beginDate": "2024-11-25",
+        "endDate": "2024-12-21",
+        "absences": [{
+            "slotId": 162643,
+            "startDate": "2024-11-25T08:00:00+00:00",
+            "subjectName": "QCM ALGO+Contrôle maths+ARCHI",
+            "justificatory": "Certificat médical",
+            "mandatory": true
+        }, {
+            "slotId": 162644,
+            "startDate": "2024-11-25T09:00:00+00:00",
+            "subjectName": "QCM ALGO+Contrôle maths+ARCHI",
+            "justificatory": "Certificat médical",
+            "mandatory": true
+        }, {
+            "slotId": 162650,
+            "startDate": "2024-11-25T13:00:00+00:00",
+            "subjectName": "Mathématiques",
+            "justificatory": "Certificat médical",
+            "mandatory": true
+        }, {
+            "slotId": 162651,
+            "startDate": "2024-11-25T14:00:00+00:00",
+            "subjectName": "Mathématiques",
+            "justificatory": "Certificat médical",
+            "mandatory": true
+        }, {
+            "slotId": 162852,
+            "startDate": "2024-11-26T14:30:00+00:00",
+            "subjectName": "ANGLAIS 2.2",
+            "justificatory": null,
+            "mandatory": true
+        }, {
+            "slotId": 162853,
+            "startDate": "2024-11-26T15:30:00+00:00",
+            "subjectName": "ANGLAIS 2.2",
+            "justificatory": null,
+            "mandatory": true
+        }, {
+            "slotId": 165864,
+            "startDate": "2024-12-12T09:00:00+00:00",
+            "subjectName": "Electronique",
+            "justificatory": "Communication",
+            "mandatory": true
+        }, {
+            "slotId": 165865,
+            "startDate": "2024-12-12T10:00:00+00:00",
+            "subjectName": "Electronique",
+            "justificatory": "Communication",
+            "mandatory": true
+        }, {
+            "slotId": 166497,
+            "startDate": "2024-12-17T07:00:00+00:00",
+            "subjectName": "Architecture",
+            "justificatory": null,
+            "mandatory": true
+        }, {
+            "slotId": 166498,
+            "startDate": "2024-12-17T08:00:00+00:00",
+            "subjectName": "Architecture",
+            "justificatory": null,
+            "mandatory": true
+        }, {
+            "slotId": 166944,
+            "startDate": "2024-12-18T07:00:00+00:00",
+            "subjectName": "Algorithmique",
+            "justificatory": null,
+            "mandatory": true
+        }, {
+            "slotId": 166945,
+            "startDate": "2024-12-18T08:00:00+00:00",
+            "subjectName": "Algorithmique",
+            "justificatory": null,
+            "mandatory": true
+        }, {
+            "slotId": 167129,
+            "startDate": "2024-12-20T07:00:00+00:00",
+            "subjectName": "Mathématiques",
+            "justificatory": null,
+            "mandatory": true
+        }, {
+            "slotId": 167130,
+            "startDate": "2024-12-20T08:00:00+00:00",
+            "subjectName": "Mathématiques",
+            "justificatory": null,
+            "mandatory": true
+        }, {
+            "slotId": 167131,
+            "startDate": "2024-12-20T09:00:00+00:00",
+            "subjectName": "Mathématiques",
+            "justificatory": null,
+            "mandatory": true
+        }],
+        "exclusions": []
+    }]
+}]
+"""
