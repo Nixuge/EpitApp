@@ -1,5 +1,5 @@
 //
-//  AuthViewModel.swift
+//  ContentView.swift
 //  ZeusApp
 //
 //  Created by Quenting on 14/02/2025.
@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var selectedTab: Tab = .zeus //TODO: Change back
+    @State private var selectedTab: Tab = .zeus
     
     @State private var color: Color = .orange
 
@@ -56,6 +56,7 @@ struct ContentView: View {
             }
             .tag(Tab.settings)
         }
+        .navigationViewStyle(StackNavigationViewStyle())
         .tint(color)
         .onChange(of: selectedTab, perform: { tab in
             changeColorToTabColor(selectedTab)
