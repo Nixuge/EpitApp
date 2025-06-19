@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "EpitAppIconPNG-3 1.png",
+      "filename" : "epitappicon-cleaned 1.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -52,7 +52,7 @@
       "size" : "512x512"
     },
     {
-      "filename" : "EpitAppIconPNG-3.png",
+      "filename" : "epitappicon-cleaned.png",
       "idiom" : "mac",
       "scale" : "2x",
       "size" : "512x512"
