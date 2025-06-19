@@ -5,10 +5,15 @@
 //  Created by Quenting on 26/03/2025.
 //
 
+// TODO:
+// Break down into multiple classes.
+// Find if lag on open (due to the ScrollView) is fixable :/
 import SwiftUI
 
 
 struct ChooseIdView: View {
+    @State private var favoriteHelpPopupShown = false
+
     @State var searchText = ""
     @State var backupIdText = ""
     
@@ -19,7 +24,15 @@ struct ChooseIdView: View {
     @ObservedObject var selectedIdCache = SelectedIdCache.shared
     
     @FocusState private var searchFocus: Bool
+    
+    @State private var isEditing = false
 
+    private func moveFavorite(from source: IndexSet, to destination: Int) {
+        selectedIdCache.favoriteIds.move(fromOffsets: source, toOffset: destination)
+    }
+    private func deleteFavorite(at offsets: IndexSet) {
+        selectedIdCache.favoriteIds.remove(atOffsets: offsets)
+    }
     
     var body: some View {
         VStack {
@@ -38,10 +51,67 @@ struct ChooseIdView: View {
             
             Divider()
             
-            
-            Spacer()
-            
-            VStack {
+            ScrollView {
+                if (selectedIdCache.favoriteIds.count > 0) {
+                    NavigationView {
+                        List {
+                            ForEach(selectedIdCache.favoriteIds, id: \.self) { row in
+                                ZStack {
+                                    Rectangle()
+                                        .fill(Color.clear)
+                                        .contentShape(Rectangle())
+                                        .onTapGesture {
+                                            onStringButtonClick(id: row.id, isPresented: $isPresented)
+                                        }
+                                    
+                                    HStack {
+                                        Text(row.name)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .onTapGesture {
+                                                onStringButtonClick(id: row.id, isPresented: $isPresented)
+                                            }
+                                        
+                                        if row.id == selectedIdCache.id {
+                                            Spacer()
+                                            Label("", systemImage: "checkmark")
+                                                .foregroundStyle(.tint)
+                                        }
+                                    }
+                                }
+                                .listRowBackground(Color.clear)
+
+                            }
+                            .onMove(perform: moveFavorite)
+                            .onDelete(perform: deleteFavorite)
+                        }
+                        .scrollDisabled(true)
+                        .background(.black)
+                        .listStyle(PlainListStyle())
+                        .toolbar {
+                            ToolbarItem(placement: .navigationBarLeading) {
+                                Text("Favorites")
+                                    .foregroundStyle(.orange)
+                                    .bold()
+                                    .font(.title)
+                            }
+                            ToolbarItem(placement: .navigationBarTrailing) {
+                                EditButton()
+                            }
+                        }
+                    }
+                    .frame(height: CGFloat(selectedIdCache.favoriteIds.count) * 44 + 55)
+                    .padding(5)
+
+                    Divider()
+                }
+                
+                Text("Manual selection")
+                    .foregroundStyle(.orange)
+                    .bold()
+                    .font(.title)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.leading, 15)
+
                 switch selectedIdCache.loadingState {
                 case .def:
                     Text("Checking login...")
@@ -77,14 +147,19 @@ struct ChooseIdView: View {
 
 func onButtonClick(row: HierarchyNode, isPresented: Binding<Bool>) {
     log("Tapped on \(row.name) (id \(row.id))")
-    SelectedIdCache.shared.id = row.id
+    onStringButtonClick(id: row.id, isPresented: isPresented)
+}
+
+func onStringButtonClick(id: Int, isPresented: Binding<Bool>) {
+    log("Tapped on id \(id)")
+    SelectedIdCache.shared.id = id
     isPresented.wrappedValue = false
     CourseCache.shared.clearAllCourses()
     Task {
         await CourseCache.shared.reRequestLastSavedDateOtherwiseDoNothing()
     }
-    
 }
+
 
 
 
@@ -141,6 +216,8 @@ struct IndividualView: View {
     @Binding var isViewPresented: Bool
 
     @State var isExpanded: Bool = true
+    
+    @ObservedObject var selectedIdCache = SelectedIdCache.shared
 
     var body: some View {
         DisclosureGroup(
@@ -175,6 +252,22 @@ struct IndividualView: View {
                                             Label("", systemImage: "checkmark")
                                                 .foregroundStyle(.tint)
                                         }
+                                        if (selectedIdCache.favoriteIds.contains(where: { $0.id == row.id })) {
+                                            Label("", systemImage: "star.fill")
+                                                .foregroundStyle(.tint)
+                                                .onTapGesture {
+                                                    selectedIdCache.favoriteIds.removeAll(where: { $0.id == row.id})
+                                                    log("CC !!!")
+                                                }
+                                        } else {
+                                            Label("", systemImage: "star")
+                                                .foregroundStyle(.tint)
+                                                .onTapGesture {
+                                                    selectedIdCache.favoriteIds.append(FavoriteID(name: row.name, id: row.id))
+                                                    log("HIIII !!!")
+                                                }
+                                        }
+                        
                                     }
 
                                 }

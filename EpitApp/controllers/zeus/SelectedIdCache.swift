@@ -65,6 +65,19 @@ struct HierarchyNode: Decodable, Identifiable {
     }
 }
 
+struct FavoriteID: Identifiable, Hashable, Encodable, Decodable {
+    let name: String
+    let id: Int
+
+    var identifiableID: String { "\(name)-\(id)" }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(name)
+        hasher.combine(id)
+    }
+}
+
+
 enum SelectedIdCacheLoadingState {
     case def, loading, done, failed
 }
@@ -82,13 +95,30 @@ class SelectedIdCache: ObservableObject {
             UserDefaults.standard.set(id, forKey: "selectedIdCache.id")
         }
     }
-    
     var idString: String? {
         self.id?.description
     }
     
+    @Published var favoriteIds: [FavoriteID] = [] {
+        didSet {
+            if let encoded = try? JSONEncoder().encode(favoriteIds) {
+                UserDefaults.standard.set(encoded, forKey: "selectedIdCache.favoriteIds")
+                log("Saved: \(favoriteIds.count)")
+            }
+        }
+    }
+    
     init() {
-       id = UserDefaults.standard.integer(forKey: "selectedIdCache.id")
+        id = UserDefaults.standard.integer(forKey: "selectedIdCache.id")
+        
+        if let data = UserDefaults.standard.data(forKey: "selectedIdCache.favoriteIds"),
+           let decoded = try? JSONDecoder().decode([FavoriteID].self, from: data) {
+            favoriteIds = decoded
+            log("Loaded: \(favoriteIds.count)")
+        } else {
+            favoriteIds = [FavoriteID]()
+            log("Loaded: empty")
+        }
     }
     
     func getIdList(completion: @escaping (Bool) -> Void = {_ in }) {
