@@ -26,6 +26,7 @@ struct SettingsView: View {
                 ) {
                     zeusAuthModel.logout()
                     ZeusSettings.shared.shouldUseOfficeTokenToLogin = false
+                    CourseCache.shared.clearAllCourses()
                 }
                 
                 FancyButton(

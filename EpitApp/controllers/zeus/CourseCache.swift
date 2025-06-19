@@ -159,11 +159,6 @@ class CourseCache: ObservableObject {
 
     func loadCourses(date: Date) async {
         log("Called !")
-        if (zeusAuthModel.isGuest) {
-            log("switching to placeholder mode.")
-            await loadPlaceholderCourses(date: date)
-            return
-        }
         
         lastRequestedDate = date
         
@@ -171,6 +166,12 @@ class CourseCache: ObservableObject {
             // todo: CHECK FOR VALIDITY WITH TIMEINTERVAL
             warn("Already valid.")
             return;
+        }
+        
+        if (zeusAuthModel.isGuest) {
+            log("switching to placeholder mode.")
+            await loadPlaceholderCourses(date: date)
+            return
         }
         
         // Dates are weird.
@@ -272,8 +273,6 @@ class CourseCache: ObservableObject {
     // Note: mostly yoloed for now below, to fix up a bit.
     func loadPlaceholderCourses(date: Date) async {
         log("Loading placeholder courses...")
-
-        lastRequestedDate = date
 
         // Dates are weird.
         // For the api, we need to query from previous sunday 23:00 to this sunday 22:59:59 (UTC+1?) BUT for the actual thingys we need to get the actual days.
