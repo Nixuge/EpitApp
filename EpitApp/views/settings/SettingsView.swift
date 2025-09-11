@@ -18,26 +18,54 @@ struct SettingsView: View {
 
     
     var body: some View {
-        VStack(spacing: 50) {
-            VStack(spacing: 15) {
-                FancyButton(
+        List {
+            Section(header: Text("General (office)")) {
+                SettingsButton(
+                    text: "Logout from Office",
+                    color: .red,
+                    isDisabled: !microsoftAuth.isAuthenticated
+                ) {
+                    microsoftAuth.logout()
+                }
+                SettingsButton(
+                    text: "Login to Office",
+                    color: .red,
+                    isDisabled: microsoftAuth.isAuthenticated
+                ) {
+                    microsoftAuth.login()
+                }
+            
+            }
+            Section(header: Text("Zeus")) {
+                SettingsButton(
                     text: "Logout from Zeus",
+                    color: .orange,
                     isDisabled: zeusAuthModel.authState != .authentified
                 ) {
                     zeusAuthModel.logout()
                     ZeusSettings.shared.shouldUseOfficeTokenToLogin = false
                     CourseCache.shared.clearAllCourses()
                 }
+                SettingsButton(
+                    text: "Reset class Id for Zeus",
+                    color: .purple,
+                    isDisabled: zeusSelectedIdCache.id == nil
+                ) {
+                    zeusSelectedIdCache.id = nil
+                }
                 
-                FancyButton(
+            }
+            Section(header: Text("Pegasus")) {
+                SettingsButton(
                     text: "Logout from Pegasus",
                     color: .pegasusBackgroundColor,
                     isDisabled: pegasusAuthModel.authState != .authentified
                 ) {
                     pegasusAuthModel.logout()
                 }
-                
-                FancyButton(
+            }
+            Section(header: Text("Absences")) {
+                SettingsButton(
                     text: "Logout from Absences",
                     color: .green,
                     isDisabled: absencesAuth.authState != .authentified
@@ -45,30 +73,6 @@ struct SettingsView: View {
                     absencesAuth.logout()
                     AbsencesCache.shared.clear()
                 }
-                
-                FancyButton(
-                    text: "Logout from Office",
-                    color: .red,
-                    isDisabled: !microsoftAuth.isAuthenticated
-                ) {
-                    microsoftAuth.logout()
-                }
-            }
-            
-            FancyButton(
-                text: "Login to Office",
-                color: .red,
-                isDisabled: microsoftAuth.isAuthenticated
-            ) {
-                microsoftAuth.login()
-            }
-            
-            FancyButton(
-                text: "Reset class Id for Zeus",
-                color: .purple,
-                isDisabled: zeusSelectedIdCache.id == nil
-            ) {
-                zeusSelectedIdCache.id = nil
             }
         }
     }
