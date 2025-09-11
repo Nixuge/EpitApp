@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ContentView: View {
+    @Environment(\.colorScheme) var colorScheme
+    
     @State private var selectedTab: Tab = .zeus
     
     @State private var color: Color = .orange
@@ -75,7 +77,7 @@ struct ContentView: View {
         case .absences:
             color = .green
         case .settings:
-            color = .white
+            color = (colorScheme == .dark) ? .white : .black
         }
     }
 }
