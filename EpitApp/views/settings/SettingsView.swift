@@ -48,7 +48,7 @@ struct SettingsView: View {
                 }
                 SettingsButton(
                     text: "Reset class Id for Zeus",
-                    color: .purple,
+                    color: .orange,
                     isDisabled: zeusSelectedIdCache.id == nil
                 ) {
                     zeusSelectedIdCache.id = nil

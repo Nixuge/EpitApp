@@ -72,17 +72,14 @@ struct LoadedCalendarCourseSheet: View {
                     
                     VStack {
                         switch courseDetailsCache.details[course.idReservation] {
-                        case .loading:
-                            Text("Loading comments...")
-                                .padding(.top, 10)
-                                .foregroundStyle(.gray)
                         case .failed(let error):
-                            Text("Loading comments...")
+                            Text("Loading course data...")
                                 .padding(.top, 10)
                             Text("Error loading: \(error)")
                         case .loaded(let details):
                             if (details.comment.isEmpty) {
                                 Text("No comment")
+                                    .frame(maxWidth: .infinity, alignment: .leading)
                                     .padding(.top, 10)
                                     .foregroundStyle(.gray)
                             } else {
@@ -91,16 +88,26 @@ struct LoadedCalendarCourseSheet: View {
                                     .padding(.top, 10)
                                 Text(details.comment)
                                     .frame(maxWidth: .infinity, alignment: .leading)
-
                             }
                             
+                            if (details.isOnline) {
+                                Text("Class is online!")
+                                    .padding(.top, 10)
+                            }
+                            
+                            if (details.url != "") {
+                                if (!details.isOnline) {
+                                    Text("URL")
+                                        .padding(.top, 10)
+                                }
+                                Link(details.url, destination: URL(string: details.url)!)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                        
                         default:
                             ProgressView()
                                 .progressViewStyle(CircularProgressViewStyle(tint: borderColor))
-//                            Text("Getting ready to load comments...")
-//                            Text("")
                                 .padding(.top, 10)
-//                                .foregroundStyle(.gray)
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)

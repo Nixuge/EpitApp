@@ -33,7 +33,7 @@ struct CourseDetails: Decodable, Hashable {
 }
 
 enum CourseDetailStatus: Equatable {
-    case loading, loaded(CourseDetails), failed(String)
+    case loaded(CourseDetails), failed(String)
 }
 
 
