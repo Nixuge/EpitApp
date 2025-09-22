@@ -89,7 +89,7 @@ struct SettingsView: View {
                 } else {
                     SettingsButton(text: "Up to date !", isDisabled: true) {}
                 }
-                Text("Version \(Updater.shared.appVersion) (Build \(Updater.shared.appBuild))")
+                Text("Version \(Updater.shared.appVersion)")
             }
         }
     }

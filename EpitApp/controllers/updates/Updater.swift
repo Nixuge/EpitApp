@@ -26,7 +26,6 @@ class Updater: ObservableObject {
     static let shared = Updater()
     
     public final var appVersion: String
-    public final var appBuild: String
     
     @Published var updateAlertShown = false
     
@@ -34,8 +33,7 @@ class Updater: ObservableObject {
     @Published var upToDate: Bool? = nil
     
     init () {
-        appVersion = Bundle.main.releaseVersionNumber ?? "0.0"
-        appBuild = "12"
+        appVersion = Bundle.main.releaseVersionNumber ?? "0.0.0"
     }
     
     func grabUpdateVersions() async {
@@ -51,7 +49,7 @@ class Updater: ObservableObject {
             }
             guard res.statusCode == 200 else {
                 warn("Failed at statuscode step: \(res.statusCode)")
-                return//bite
+                return
             }
             guard let data = data else {
                 warn("Failed at data unwrap step")
@@ -59,10 +57,8 @@ class Updater: ObservableObject {
             }
             
             do {
-                info("aaa")
                 let appVersions = try JSONDecoder().decode([VersionEntry].self, from: data)
-                let currentVersionString = "\(self.appVersion).\(self.appBuild)"
-                let currentComponents = currentVersionString.components(separatedBy: ".").compactMap { Int($0) }
+                let currentComponents = self.appVersion.components(separatedBy: ".").compactMap { Int($0) }
 
                 var showAlert = false
                 var upToDate = true
@@ -77,7 +73,7 @@ class Updater: ObservableObject {
 
                     // Compare each component numerically
                     let isNewer = paddedVersion.lexicographicallyPrecedes(paddedCurrent) { $0 > $1 }
-                    info("Comp: \(version.version) vs \(currentVersionString), res: \(isNewer)")
+                    //info("Comp: \(version.version) vs \(currentVersionString), res: \(isNewer)")
 
                     if isNewer {
                         self.newAppVersions.append(version)
