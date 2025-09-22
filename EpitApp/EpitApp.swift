@@ -10,6 +10,8 @@ import MSAL
 
 @main
 struct EpitApp: App {
+    @ObservedObject var updater = Updater.shared
+
     var body: some Scene {
         WindowGroup {
             ContentView().tint(.orange)
@@ -20,8 +22,13 @@ struct EpitApp: App {
                 MSALPublicClientApplication.handleMSALResponse(
                     url,
                     sourceApplication: "com.microsoft.azureauthenticator"
-                )
-            }
+                )}
+                .onAppear { Task {
+                    await Updater.shared.grabUpdateVersions()
+                }}
+                .alert(isPresented: $updater.updateAlertShown) {
+                    Alert(title: Text(updater.getUpdatePopupTitle()), message: Text(updater.getUpdatePopupString()), dismissButton: .default(Text("Got it!")))
+                }
         }
     }
 }

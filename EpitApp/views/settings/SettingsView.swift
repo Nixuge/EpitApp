@@ -15,7 +15,6 @@ struct SettingsView: View {
     @ObservedObject var absencesAuth = AbsencesAuthModel.shared
     
     @ObservedObject var zeusSelectedIdCache = SelectedIdCache.shared
-
     
     var body: some View {
         List {
@@ -73,6 +72,24 @@ struct SettingsView: View {
                     absencesAuth.logout()
                     AbsencesCache.shared.clear()
                 }
+            }
+            
+            Section(header: Text("Updates")) {
+                if (Updater.shared.upToDate == nil) {
+                    SettingsButton(
+                        text: "Loading update status...",
+                        isDisabled: true,
+                        isLoading: true,
+                    ) { }
+                } else if (!Updater.shared.upToDate!) {
+                    SettingsButton(
+                        text: "Update available !",
+                        color: .cyan,
+                    ) { Updater.shared.updateAlertShown = true }
+                } else {
+                    SettingsButton(text: "Up to date !", isDisabled: true) {}
+                }
+                Text("Version \(Updater.shared.appVersion) (Build \(Updater.shared.appBuild))")
             }
         }
     }
