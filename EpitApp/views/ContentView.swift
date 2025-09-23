@@ -51,7 +51,7 @@ struct ContentView: View {
 
             NavigationView {
                 SettingsView()
-                    .navigationTitle("Settings")
+                    //.navigationTitle("Settings")
             }
             .tabItem {
                 Label("Settings", systemImage: "gearshape")

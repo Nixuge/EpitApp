@@ -113,7 +113,7 @@ struct PegasusECUEInner: Identifiable {
 struct PegasusGrade: Identifiable {
     let id = UUID()
     let noteType: String
-    let date: String // TODO?: Date
+    let date: String
     let note: PegasusGradeValue
 }
 

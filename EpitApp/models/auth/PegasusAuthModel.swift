@@ -9,8 +9,6 @@ import Combine
 // - Login manually (currently done)
 // Not even sure if possible to implement, havent looked at pegasus yet.
 
-// TODO: Save tokens to keychain? (unsure)
-
 
 class PegasusAuthModel: ObservableObject {
     static let shared = PegasusAuthModel()
