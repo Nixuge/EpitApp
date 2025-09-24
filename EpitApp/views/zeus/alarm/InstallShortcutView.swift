@@ -13,13 +13,33 @@ struct InstallShortcutView: View {
     
     
     var body: some View {
-        VStack {
+        VStack(spacing: 10) {
             Text("Installation instructions")
                 .font(.largeTitle)
+                .padding(.top, 50)
             
-            Text("Install the shortcuts app (https://apps.apple.com/fr/app/shortcuts/id1462947752?l=en-GB)")
-            Text("Add the shortcut (...)")
+            Text("You might need to reinstall the shortcut if its version doesn't match the one displayed below.")
+                .font(.caption)
+                .foregroundStyle(.gray)
+                .multilineTextAlignment(.center)
+                .padding(.leading, 20)
+                .padding(.trailing, 20)
+            
+            Text("Current shortcut version: 1.0")
+                .font(.caption)
+                .foregroundStyle(.gray)
+            
+            Spacer()
+            Button("Install the shortcuts app (tap)") {
+                UIApplication.shared.open(URL(string: "https://apps.apple.com/fr/app/shortcuts/id1462947752?l=en-GB")!)
+            }
+            
+            Button("Add the shortcut (tap)") {
+                UIApplication.shared.open(URL(string: "https://www.icloud.com/shortcuts/845ac8f62e9844e6a06a5a7eb8c79150")!)
+            }
+            
             Text("All done !")
+            Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }

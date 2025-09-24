@@ -78,7 +78,7 @@ struct SetAlarmView: View {
             
             Button("Set alarm at \(currentAlarmTime)") {
                 AlarmSetter.shared.clearAlarmSet()
-                UIApplication.shared.open(URL(string: "shortcuts://run-shortcut?name=EpitApp%20Alarm%20Setter&input=text&text=\(currentAlarmTime)")!)
+                UIApplication.shared.open(URL(string: "shortcuts://run-shortcut?name=EpitApp%20Alarm%20Setter%201.0&input=text&text=\(currentAlarmTime)")!)
             }
             .font(.title)
             .foregroundStyle(.white)
@@ -93,6 +93,21 @@ struct SetAlarmView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .sheet(isPresented: $showInstallShortcutView, content: {
             InstallShortcutView(isPresented: $showInstallShortcutView)
+            .background(
+                ZStack {
+                    // Note: unsure if looks best #000 black or not
+                    // Background color
+                    if (colorScheme == .dark) {
+                        Color.black.edgesIgnoringSafeArea(.all)
+                    }
+                    // Border (offset down otherwise not looking good)
+                    GeometryReader { geometry in
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(.white.opacity(0.15), lineWidth: 2)
+                            .frame(height: geometry.size.height + 100)
+                    }
+                }
+            )
         })
         .sheet(isPresented: $showSuccessView, content: {
             AlarmSuccessView(alarmTime: currentAlarmTime, isPresented: $showSuccessView, isParentPresented: $isPresented)
