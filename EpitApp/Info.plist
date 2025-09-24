@@ -11,6 +11,7 @@
 			<string>me.nixuge.EpitApp</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
+				<string>epitapp</string>
 				<string>me1.nixuge.epitapp</string>
 				<string>me.nixuge.epitapp</string>
 				<string>msauth.me1.nixuge.epitapp</string>

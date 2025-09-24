@@ -16,9 +16,16 @@ struct EpitApp: App {
         WindowGroup {
             ContentView().tint(.orange)
                 .onOpenURL { url in
+                info("App opened with url \(url)")
+                    
+                if (url.absoluteString.starts(with: "epitapp://clock_enabled")) {
+                    AlarmSetter.shared.setAlarmSet(url: url.absoluteString.replacing("epitapp://clock_enabled/", with: ""))
+                    return
+                }
                 // sourceApplication hardcoded for now.
                 // TODO: Find a way in SwiftUI to NOT HARDCODE IT LIKE THAT.
                 // AppDellegate's application function DOES NOT GET CALLED
+                // Actually could just keep it like that tbh (if possible with an if before just to make sure)
                 MSALPublicClientApplication.handleMSALResponse(
                     url,
                     sourceApplication: "com.microsoft.azureauthenticator"

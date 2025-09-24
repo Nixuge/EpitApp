@@ -26,6 +26,39 @@ struct CourseRange : Identifiable {
 struct LoadedCalendarView: View {
     @Environment(\.colorScheme) var colorScheme
 
+    
+    private var currentDayStartsAt: Int {
+        guard let courses = courseCache.courses[selectedDate.FNT] else {
+            return 0
+        }
+        if (courses.1.isEmpty) {
+            return 0
+        }
+        
+        // Note: unsure as to if I should really go through the whole array or just stop when I find a non empty course, but meh might as well
+        var start = 999999
+        for course in courses.1 {
+            if (course.courses.isEmpty) {
+                continue
+            }
+            if (course.start < start) {
+                start = course.start
+            }
+        }
+        
+        return start
+    }
+    
+    private var shouldShowAlarmSetter: Bool {
+        let minutesSinceMidnight = Calendar.current.dateComponents([.hour, .minute], from: Date()).hour! * 60 + Calendar.current.dateComponents([.minute], from: Date()).minute!
+        
+        if Calendar.current.isDateInTomorrow(selectedDate) {
+            return true
+        }
+        
+        return (Calendar.current.isDateInToday(selectedDate) && currentDayStartsAt > minutesSinceMidnight)
+    }
+
     @ObservedObject var zeusAuthModel = ZeusAuthModel.shared
     @ObservedObject var courseCache = CourseCache.shared
     @State private var selectedDate = Date()
@@ -33,8 +66,8 @@ struct LoadedCalendarView: View {
     @State private var displayedDates: [Date] = []
     
     @State private var showClassPicker = false
+    @State private var showAlarmSetter = false
 
-    
     private let preloadedTabAmount = 14
 
     //todo:
@@ -79,9 +112,8 @@ struct LoadedCalendarView: View {
             }
             
             
-            
             FancySheetButton(
-                label: { Label("Lightning", systemImage: "tag.fill").labelStyle(.iconOnly) },
+                label: { Label("Picker", systemImage: "tag.fill").labelStyle(.iconOnly) },
                 color: .gray.opacity(0.15),
                 textColor: colorScheme == .dark ? .white : .gray,
                 isPresented: $showClassPicker,
@@ -109,8 +141,41 @@ struct LoadedCalendarView: View {
                 })
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
             .padding(5)
+            
+            if (shouldShowAlarmSetter) {
+                FancySheetButton(
+                    label: { Label("Alarm", systemImage: "alarm.fill").labelStyle(.iconOnly) },
+                    color: .gray.opacity(0.15),
+                    textColor: colorScheme == .dark ? .white : .gray,
+                    isPresented: $showAlarmSetter,
+                    action: {
+                        showAlarmSetter = true
+                    },
+                    sheetContent: {
+                        SetAlarmView(isPresented: $showAlarmSetter, dayStartsAt: currentDayStartsAt)
+                            .background(
+                                ZStack {
+                                    // Note: unsure if looks best #000 black or not
+                                    // Background color
+                                    if (colorScheme == .dark) {
+                                        Color.black.edgesIgnoringSafeArea(.all)
+                                    }
+                                    // Border (offset down otherwise not looking good)
+                                    GeometryReader { geometry in
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .stroke(.white.opacity(0.15), lineWidth: 2)
+                                            .frame(height: geometry.size.height + 100)
+                                    }
+                                }
+                            )
+                    })
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+                .padding(.bottom, 5)
+                .padding(.trailing, 70)
+                .transition(.opacity)
+            }
         }
-        
+        .animation(.easeInOut(duration: 0.3), value: shouldShowAlarmSetter)
     }
 
     private func refresh() async {
