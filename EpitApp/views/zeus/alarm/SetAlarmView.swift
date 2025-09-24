@@ -7,9 +7,11 @@
 
 import SwiftUI
 
-// TODO: Instead of closing on success, make a success page (& an error page)
+// Todo?: show a notification here instead of in the shortcut (or none at all?)
 
 struct SetAlarmView: View {
+    @Environment(\.colorScheme) var colorScheme
+
     @Binding var isPresented: Bool
     var dayStartsAt: Int
     
@@ -25,6 +27,7 @@ struct SetAlarmView: View {
     }
     
     @State private var showInstallShortcutView = false
+    @State private var showSuccessView = false
     
     @ObservedObject var alarmSetter = AlarmSetter.shared
     
@@ -91,21 +94,44 @@ struct SetAlarmView: View {
         .sheet(isPresented: $showInstallShortcutView, content: {
             InstallShortcutView(isPresented: $showInstallShortcutView)
         })
-        .onChange(of: alarmSetter.receivedAlarmSet) { alarm in
+        .sheet(isPresented: $showSuccessView, content: {
+            AlarmSuccessView(alarmTime: currentAlarmTime, isPresented: $showSuccessView, isParentPresented: $isPresented)
+                .background(
+                    ZStack {
+                        // Note: unsure if looks best #000 black or not
+                        // Background color
+                        if (colorScheme == .dark) {
+                            Color.black.edgesIgnoringSafeArea(.all)
+                        }
+                        // Border (offset down otherwise not looking good)
+                        GeometryReader { geometry in
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(.white.opacity(0.15), lineWidth: 2)
+                                .frame(height: geometry.size.height + 100)
+                        }
+                    }
+                )
+        })
+        .onChange(of: showSuccessView) { newValue in // Auto close this view when the success view gets closed
+            if (!newValue) {
+                isPresented = false
+            }
+        }
+        .onChange(of: alarmSetter.receivedAlarmSet) { alarm in // "Receive" updates from the alarmSetter
             info("New alarm set: \(String(describing: alarm))")
             guard let alarm = alarm else { return }
             
             if (alarm.time == currentAlarmTime) {
-                isPresented = false
+                showSuccessView = true
             } else {
                 warn("Wrong alarm time received: \(alarm.time), expected: \(currentAlarmTime)")
             }
         }
-        .onChange(of: hours) { newHours in
+        .onChange(of: hours) { newHours in // Update saved val every time we update it
 //            info("Set hour set: \(newHours)")
             ZeusSettings.shared.alarmHoursBeforeClass = newHours
         }
-        .onChange(of: minutes) { newMinutes in
+        .onChange(of: minutes) { newMinutes in // same
 //            info("Set minute set: \(newMinutes)")
             ZeusSettings.shared.alarmMinutesBeforeClass = newMinutes
         }
