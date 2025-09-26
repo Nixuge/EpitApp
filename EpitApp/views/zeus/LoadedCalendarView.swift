@@ -50,6 +50,9 @@ struct LoadedCalendarView: View {
     }
     
     private var shouldShowAlarmSetter: Bool {
+        if (currentDayStartsAt == 0) {
+            return false
+        }
         let minutesSinceMidnight = Calendar.current.dateComponents([.hour, .minute], from: Date()).hour! * 60 + Calendar.current.dateComponents([.minute], from: Date()).minute!
         
         if Calendar.current.isDateInTomorrow(selectedDate) {

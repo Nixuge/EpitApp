@@ -39,6 +39,7 @@ struct InstallShortcutView: View {
             }
             
             Text("All done !")
+            Text("If the shortcuts asks for some permission while running for the first time, tap 'Always Allow' and it shouldn't bother you anymore")
             Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
