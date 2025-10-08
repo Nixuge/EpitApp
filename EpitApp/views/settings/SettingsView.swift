@@ -18,6 +18,10 @@ struct SettingsView: View {
     
     @ObservedObject var zeusSelectedIdCache = SelectedIdCache.shared
     
+    @State private var zeusHideText: String = ZeusSettings.shared.hideClassesEndingWith
+    @State private var isShowHideClassesInfoAlertShown: Bool = false
+
+    
     var body: some View {
         NavigationStack {
             List {
@@ -55,7 +59,17 @@ struct SettingsView: View {
                     ) {
                         zeusSelectedIdCache.id = nil
                     }
-                    
+                    HStack {
+                        TextField(
+                            "Hide classes ending with",
+                            text: $zeusHideText
+                        )
+                        Spacer()
+                        Button(action: showHideClassesInfo) {
+                            Label("", systemImage: "exclamationmark.circle")
+                                .foregroundStyle(.orange)
+                        }
+                    }
                 }
                 Section(header: Text("Pegasus")) {
                     SettingsButton(
@@ -100,5 +114,15 @@ struct SettingsView: View {
             }
             .navigationTitle("Settings")
         }
+        .alert(isPresented: $isShowHideClassesInfoAlertShown) {
+            Alert(title: Text("Hide classes help"), message: Text("This functionality is meant to be used for classes with multiple groups.\nEg if you're in group 2 of class 2, you want to show classes that end with 2.2 but hide the ones ending with 2.1.\nIn that case, you just have to put '2.1' in this field and it'll hide the classes of the other group."), dismissButton: .default(Text("Got it")))
+        }.onChange(of: zeusHideText) { newText in
+            ZeusSettings.shared.hideClassesEndingWith = newText
+        }
+    }
+    
+    
+    private func showHideClassesInfo() {
+        isShowHideClassesInfoAlertShown = true;
     }
 }

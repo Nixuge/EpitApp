@@ -24,10 +24,16 @@ class ZeusSettings: ObservableObject {
             UserDefaults.standard.set(alarmMinutesBeforeClass, forKey: "zeusSettings.alarmMinutesBeforeClass")
         }
     }
+    @Published public var hideClassesEndingWith: String {
+        didSet {
+            UserDefaults.standard.set(hideClassesEndingWith, forKey: "zeusSettings.hideClassesEndingWith")
+        }
+    }
         
     init() {
         self.shouldUseOfficeTokenToLogin = UserDefaults.standard.bool(forKey: "zeusSettings.shouldUseOfficeTokenToLogin")
         self.alarmHoursBeforeClass = UserDefaults.standard.integer(forKey: "zeusSettings.alarmHoursBeforeClass")
         self.alarmMinutesBeforeClass = UserDefaults.standard.integer(forKey: "zeusSettings.alarmMinutesBeforeClass")
+        self.hideClassesEndingWith = UserDefaults.standard.string(forKey: "zeusSettings.hideClassesEndingWith") ?? ""
     }
 }

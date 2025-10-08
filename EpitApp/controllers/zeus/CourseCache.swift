@@ -156,6 +156,34 @@ class CourseCache: ObservableObject {
     func clearAllCourses() {
         self.courses = [:]
     }
+    
+    // TODO: Opti?
+    func removeZeusHidden(from input: [String: [CourseRange]]) -> [String: [CourseRange]] {
+        if (ZeusSettings.shared.hideClassesEndingWith == "") {
+            return input
+        }
+        
+        var output: [String: [CourseRange]] = [:]
+                
+        for (date, var courses) in input {
+            var outForDate: [CourseRange] = []
+            for(var c) in courses {
+                var shown = false;
+                for (var individualC) in c.courses {
+                    if (!individualC.name.hasSuffix(ZeusSettings.shared.hideClassesEndingWith)) {
+                        shown = true;
+                        break;
+                    }
+                }
+                if (shown) {
+                    outForDate.append(c);
+                }
+            }
+            output[date] = outForDate;
+        }
+        
+        return output;
+    }
 
     func loadCourses(date: Date) async {
         log("Called !")
@@ -248,7 +276,8 @@ class CourseCache: ObservableObject {
                 endDate: endOfWeek!
             )
             let coursesNoTime = self.buildRangesFromDictionary(from: result)
-            let blanked = self.fillInBlanks(from: coursesNoTime)
+            let coursesCleared = self.removeZeusHidden(from: coursesNoTime)
+            let blanked = self.fillInBlanks(from: coursesCleared)
             
             let final = self.addSaveTime(from: blanked)
             for (date, coursesForDate) in final {
