@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct MoreInfoView: View {
+    @Environment(\.colorScheme) var colorScheme
+
     var body: some View {
         Text("Dev par le grand nixu")
             .font(.largeTitle)
@@ -23,7 +25,7 @@ struct MoreInfoView: View {
                 SettingsButton(text: "Discord", color: Color.init(hex: "#5865F2")) {
                     UIApplication.shared.open(URL(string: "https://discord.com/users/784062518901473351")!)
                 }
-                SettingsButton(text: "Email", color: Color.init(hex: "#ffffff")) {
+                SettingsButton(text: "Email", color: colorScheme == .dark ? .white : .black) {
                     UIApplication.shared.open(URL(string: "mailto:epitapp@nixuge.me")!)
                 }
             }
@@ -32,7 +34,7 @@ struct MoreInfoView: View {
                 SettingsButton(text: "Source Code", color: Color.init(hex: "#586673")) {
                     UIApplication.shared.open(URL(string: "https://github.com/Nixuge/epitapp")!)
                 }
-                SettingsButton(text: "nixuge.me", color: Color.init(hex: "#ffffff")) {
+                SettingsButton(text: "nixuge.me", color: colorScheme == .dark ? .white : .black) {
                     UIApplication.shared.open(URL(string: "https://nixuge.me")!)
                 }
             }

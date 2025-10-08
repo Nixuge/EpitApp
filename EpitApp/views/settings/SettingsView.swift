@@ -9,6 +9,8 @@ import SwiftUI
 
 
 struct SettingsView: View {
+    @Environment(\.colorScheme) var colorScheme
+
     @ObservedObject var zeusAuthModel = ZeusAuthModel.shared
     @ObservedObject var pegasusAuthModel = PegasusAuthModel.shared
     @ObservedObject var microsoftAuth = MicrosoftAuth.shared
@@ -77,7 +79,7 @@ struct SettingsView: View {
                 
                 Section(header: Text("About")) {
                     NavigationLink(destination: MoreInfoView()) {
-                        SettingsButton(text: "Support") { }
+                        SettingsButton(text: "Support", color: colorScheme == .dark ? .white : .black) { }
                     }
                     if (Updater.shared.upToDate == nil) {
                         SettingsButton(
