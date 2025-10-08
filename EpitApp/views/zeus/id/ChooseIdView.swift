@@ -12,6 +12,8 @@ import SwiftUI
 
 
 struct ChooseIdView: View {
+    @Environment(\.colorScheme) var colorScheme
+    
     @State private var favoriteHelpPopupShown = false
 
     @State var searchText = ""
@@ -85,7 +87,7 @@ struct ChooseIdView: View {
                             .onDelete(perform: deleteFavorite)
                         }
                         .scrollDisabled(true)
-                        .background(.black)
+                        .background(colorScheme == .dark ? .black : .white)
                         .listStyle(PlainListStyle())
                         .toolbar {
                             ToolbarItem(placement: .navigationBarLeading) {
