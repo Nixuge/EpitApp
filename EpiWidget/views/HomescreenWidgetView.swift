@@ -14,9 +14,9 @@ struct HomescreenWidgetView : View {
             Text("Date:")
             Text(entry.date.description)
 
-            Text(entry.providerInfo)
+            Text("Updated by \(entry.providerInfo)")
             
-            Text("\nra oe")
+            Text("WIP")
         }
     }
 }
